@@ -84,4 +84,41 @@ public class DriveBase {
              initEncRight = talRM.getSelectedSensorPosition(0);
              initEncCenter = talC.getSelectedSensorPosition(0);
         }
+        //reset gyro value
+        public void resetGyro(){
+            gyro.reset();
+        }
+
+        //set left, right, and center talons
+        public void setLeft(/*insert double*/){
+
+        }
+
+        public void setRight(/*insert double*/){
+
+        }
+
+        public void setCenter(/*insert double*/){
+
+        }
+
+        public void forward(/*insert double*/){
+
+        }
+
+        public void brakeMode(/*boolean mode*/){
+            //set talon brakemodes
+        }
+
+        public void teleopDrive(/*joy control*/){
+            //insert drive control code
+        }
+
+        public boolean turn(/*double angle,speed*/){
+            //code to return turn complete T/F
+        }
+
+        public void pidControl(/*pid constants*/){
+            //pid config
+        }
 }
