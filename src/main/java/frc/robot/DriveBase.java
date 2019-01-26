@@ -8,32 +8,43 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+/**
+ * Framework for our slide drive base and associated methods.
+ */
 public class DriveBase {
     // Object declaraction
     private Gyroscope gyro;
     private TalonSRX talLM, talLF, talRM, talRF, talC;
+
     // Constant inititalization
     // Talon Port values  
     // Order as follows: Right-Master, Right-Follower, Left-Master, Left-Follower, Center
     private final int[] DRIVE_TALON_PORT = {0, 0, 0, 0, 0};
+
     // Minimum joystick movement required for robot control
     private final int JOYSTICK_DEADZONE = 0;
+
     // Drive speed for autonomous movement
     private final int AUTO_DRIVE_SPEED = 0;
+
     // Constants for PID drive
     private final double kF = 0;
     private final double kP = 0;
     private final double kI = 0;
     private final double kD = 0;
+
     // Methods for turn method
     private final double TURN_OFFSET = 0;
     private final double MIN_TURN_SPEED = 0;
     private final double MAX_TURN_SPEED = 0;
     private final double MIN_DEGREES_FULL_SPEED = 0;
+
     // The number of encoder rotations in a single food
     private final int ROTATIONS_TO_FEET = 0;
+
     // Maximum speed at which the drive train is allowed to move
     private final int MAXIMUM_DRIVE_TALON_INPUT = 0;
+
     //Stores encoder position
     private double initEncLeft, initEncRight, initEncCenter;
 
@@ -65,8 +76,7 @@ public class DriveBase {
         //Gets encdoer value for future reference in getNormalizedPosition 
         initEncLeft = talLM.getSelectedSensorPosition(0);
         initEncRight = talRM.getSelectedSensorPosition(0);
-        initEncCenter = talC.getSelectedSensorPosition(0);  
-
+        initEncCenter = talC.getSelectedSensorPosition(0);
     }
 
     /**
@@ -168,7 +178,8 @@ public class DriveBase {
      * Moves the robot forward at a predetermined speed.
      */
     public void moveForward() {
-
+        setRight(AUTO_DRIVE_SPEED);
+        setLeft(AUTO_DRIVE_SPEED);
     }
 
     /**
@@ -200,13 +211,9 @@ public class DriveBase {
     // }
 
     /**
-     * Sets the PID constants for all of the drive talons.
-     * @param kF
-     * @param kP
-     * @param kI
-     * @param kD
+     * Enables PID control using set values of kF, kP, kI, and kD.
      */
-    public void configPIDControl(double kF, double kP, double kI, double kD) {
-        // pid config
+    public void enablePIDControl() {
+        
     }
 }
