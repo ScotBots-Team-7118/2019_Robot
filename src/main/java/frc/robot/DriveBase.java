@@ -67,7 +67,7 @@ public class DriveBase {
         //Finds the difference between original encoder value and the current to find the distance traveled
         //Double is run for the Left, Right, and Center
         public double getNormalizedPositionL() {
-            return talLM.getSelectedSensorPosition(0) - initEncLeft;;
+            return talLM.getSelectedSensorPosition(0) - initEncLeft;
         }
         
         public double getNormalizedPositionR() {
