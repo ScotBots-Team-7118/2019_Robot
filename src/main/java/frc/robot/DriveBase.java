@@ -37,8 +37,11 @@ public class DriveBase {
     //Stores encoder position
     private double initEncLeft, initEncRight, initEncCenter;
 
-
-
+    /**
+     * Constructs a new DriveBase object.
+     * 
+     * @param Gyroscope gyro
+     */
     public DriveBase(Gyroscope gyro) {
         //Get instance of gyro
         this.gyro = gyro;
@@ -65,88 +68,145 @@ public class DriveBase {
         initEncCenter = talC.getSelectedSensorPosition(0);  
 
     }
-        //Finds the difference between original encoder value and the current to find the distance traveled
-        //Double is run for the Left, Right, and Center
-        public double getNormalizedPositionL() {
-            return talLM.getSelectedSensorPosition(0) - initEncLeft;
-        }
-        
-        public double getNormalizedPositionR() {
-            return talRM.getSelectedSensorPosition(0) - initEncRight;
-        }
 
-        public double getNormalizedPositionC() {
-            return talC.getSelectedSensorPosition(0) - initEncCenter;
-        }
+    /**
+     * Gets the distance traveled by the left side of the robot.
+     * @return
+     */
+    public double getNormalizedPositionL() {
+        return talLM.getSelectedSensorPosition(0) - initEncLeft;
+    }
         
-        //Resets encoder values  
-         public void resetEncoders() {
-             initEncLeft = talLM.getSelectedSensorPosition(0);
-             initEncRight = talRM.getSelectedSensorPosition(0);
-             initEncCenter = talC.getSelectedSensorPosition(0);
-        }
-        //reset gyro value
-        public void resetGyro(){
-            gyro.reset();
-        }
+    /**
+     * Gets the distance traveled by the right side of the robot.
+     * @return
+     */
+    public double getNormalizedPositionR() {
+        return talRM.getSelectedSensorPosition(0) - initEncRight;
+    }
 
-        //set left, right, and center talons
-        public void setLeft(double v){
-            if(Math.abs(v) > 2){
+    /**
+     * Gets the distance traveled by the center wheels of the robot.
+     * @return
+     */
+    public double getNormalizedPositionC() {
+        return talC.getSelectedSensorPosition(0) - initEncCenter;
+    }
+        
+    /**
+     * Resets the distance traveled by the encoders for the normalized positions.
+     */
+    public void resetEncoders() {
+        initEncLeft = talLM.getSelectedSensorPosition(0);
+        initEncRight = talRM.getSelectedSensorPosition(0);
+        initEncCenter = talC.getSelectedSensorPosition(0);
+    }
+
+    
+    /**
+     * Accessor method that resets the gyroscope.
+     */
+    public void resetGyro() {
+        gyro.reset();
+    }
+
+    /**
+     * Sets the left side of the robot to a given velocity,
+     * assuming it is within the accepted range of -1 < v < 1.
+     * @param v
+     */
+    public void setLeft(double v) {
+        if (Math.abs(v) > 2) {
             System.out.println("Left side velocity out of range!!");
             return;
-            }
+        }
 
-            if(Math.abs(v) > 0.9){
-                v = 0.9*(v/Math.abs(v));
-            }
-            
-            talLM.set(ControlMode.PercentOutput,v);
-            talLF.set(ControlMode.Follower, DRIVE_TALON_PORT[0]);}
+        if (Math.abs(v) > 0.9) {
+            v = 0.9 * (v / Math.abs(v));
+        }
+
+        talLM.set(ControlMode.PercentOutput, v);
+        talLF.set(ControlMode.Follower, DRIVE_TALON_PORT[0]);
+    }
+
+    /**
+     * Sets the right side of the robot to a given velocity,
+     * assuming it is within the accepted range of -1 < v < 1.
+     * @param v
+     */
+    public void setRight(double v) {
+        if (Math.abs(v) > 2) {
+            System.out.println("Right side velocity out of range!!");
+            return;
+        }
+        if (Math.abs(v) > 0.9) {
+            v = 0.9 * (v / Math.abs(v));
+        }
+        talRM.set(ControlMode.PercentOutput, v);
+        talRF.set(ControlMode.Follower, DRIVE_TALON_PORT[2]);
+
+    }
+
+    /**
+     * Sets the center wheels of the robot to a given velocity,
+     * assuming it is within the accepted range of -1 < v < 1.
+     * @param v
+     */
+    public void setCenter(double v) {
+        if (Math.abs(v) > 2) {
+            System.out.println("Right side velocity out of range!!");
+            return;
+        }
+        if (Math.abs(v) > 0.9) {
+            v = 0.9 * (v / Math.abs(v));
+        }
+        talC.set(ControlMode.PercentOutput, v);
+
+    }
+
+    /**
+     * Moves the robot forward at a predetermined speed.
+     */
+    public void moveForward() {
+
+    }
+
+    /**
+     * Sets the neutral mode on the talons according to a boolean
+     * (true = brake mode, false = coast mode).
+     * @param brake
+     */
+    public void brakeMode(boolean brake) {
+        // set talon brakemodes
+    }
+
+    /**
+     * Drives the robot according to a single joystick
+     * with 360 degrees of freedom.
+     * @param axisX
+     * @param axisY
+     */
+    public void teleopDrive(double axisX, double axisY) {
+        // insert drive control code
+    }
+
+    // /**
+    //  * Turns the robot a given number of degrees at a set speed.
+    //  * @param angle
+    //  * @return
+    //  */
+    // public boolean turn(double angle){
         
+    // }
 
-        public void setRight(double v){
-            if(Math.abs(v) > 2){
-                System.out.println("Right side velocity out of range!!");
-                return;
-            }
-            if(Math.abs(v) > 0.9){
-                v = 0.9*(v/Math.abs(v));
-            }
-            talRM.set(ControlMode.PercentOutput, v);
-            talRF.set(ControlMode.Follower, DRIVE_TALON_PORT[2]);
-
-        }
-
-        public void setCenter(double v){
-            if(Math.abs(v) > 2){
-                System.out.println("Right side velocity out of range!!");
-                return;
-            }
-            if(Math.abs(v) > 0.9){
-                v = 0.9*(v/Math.abs(v));
-            }
-            talC.set(ControlMode.PercentOutput, v);
-
-        }
-
-        public void forward(/*insert double*/){
-
-        }
-
-        public void brakeMode(/*boolean mode*/){
-            //set talon brakemodes
-        }
-
-        public void teleopDrive(/*joy control*/){
-            //insert drive control code
-        }
-
-        //public boolean turn(/*double angle,speed*/){
-            //code to return turn complete T/F
-       // }
-
-        public void configPIDControl(/*pid constants*/){
-            //pid config
-        }
+    /**
+     * Sets the PID constants for all of the drive talons.
+     * @param kF
+     * @param kP
+     * @param kI
+     * @param kD
+     */
+    public void configPIDControl(double kF, double kP, double kI, double kD) {
+        // pid config
+    }
 }
