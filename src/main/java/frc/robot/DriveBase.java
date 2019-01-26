@@ -33,23 +33,55 @@ public class DriveBase {
     private final int ROTATIONS_TO_FEET = 0;
     // Maximum speed at which the drive train is allowed to move
     private final int MAXIMUM_DRIVE_TALON_INPUT = 0;
-    
+    //Stores encoder position
+    private double initencLeft, initencRight, initencCenter;
 
 
 
     public Drive (Gyroscope gyro){
+        //Get instance of gyro
+        this.gyro = gyro;
         //initlizes drive talons
         talLM = new TalonSRX(DRIVE_TALON_PORT[0]);
         talLF = new TalonSRX(DRIVE_TALON_PORT[1]);
         talRM = new TalonSRX(DRIVE_TALON_PORT[2]);
         talRF = new TalonSRX(DRIVE_TALON_PORT[3]);
         talC = new TalonSRX(DRIVE_TALON_PORT[4]);
-
-        talLM.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-        talRM.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-        talC.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-
+       
+        //Pairs encoders with talons
+        talLM.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0);
+        talRM.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0);
+        talC.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0 );
         
+        //Allows for set inverted 
+        talLM.setSensorPhase(true);
+        talRM.setSensorPhase(true);
+        talC.setSensorPhase(true);
+
+        //Gets encdoer value for future reference in getNormalizedPosition 
+        initencLeft = getSelectedSensorPosition(0);
+        initencRight = getSelectedSensorPosition(0);
+        initencCenter = getSelectedSensorPosition(0);  
 
     }
+        //Finds the difference between original encoder value and the current to find the distance traveled
+        //Double is run for the Left, Right, and Center
+        public double getNormalizedPositionL() {
+            return talLM.getSelectedSensorPosition(0) - initEncLeft;
+        }
+        
+        public double getNormalizedPositionR() {
+            return talRM.getSelectedSensorPosition(0) - initEncRight;
+        }
+
+        public double getNormalizedPositionC() {
+            return talC.getSelectedSensorPosition(0) - initEncCenter;
+        }
+        
+        //Resets encoder values  
+         public void resetEncoders() {
+             initEncLeft = talLM.getSelectedSensorPosition(0);
+             initEncRight = talRM.getSelectedSensorPosition(0);
+             initEncCenter = talC.getSelectedSensorPosition(0);
+        }
 }
