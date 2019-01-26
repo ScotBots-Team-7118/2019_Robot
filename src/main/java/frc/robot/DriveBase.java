@@ -3,6 +3,8 @@ package frc.robot;
 // Imports for the "DriveBase.java" class.
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Talon;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -33,14 +35,14 @@ public class DriveBase {
     // Maximum speed at which the drive train is allowed to move
     private final int MAXIMUM_DRIVE_TALON_INPUT = 0;
     //Stores encoder position
-    private double initencLeft, initencRight, initencCenter;
+    private double initEncLeft, initEncRight, initEncCenter;
 
 
 
-    public void Drive(Gyroscope gyro) {
+    public DriveBase(Gyroscope gyro) {
         //Get instance of gyro
         this.gyro = gyro;
-        //initlizes drive talons
+        //initLizes drive talons
         talLM = new TalonSRX(DRIVE_TALON_PORT[0]);
         talLF = new TalonSRX(DRIVE_TALON_PORT[1]);
         talRM = new TalonSRX(DRIVE_TALON_PORT[2]);
@@ -58,30 +60,30 @@ public class DriveBase {
         talC.setSensorPhase(true);
 
         //Gets encdoer value for future reference in getNormalizedPosition 
-        initencLeft = talLM.getSelectedSensorPosition(0);
-        initencRight = talRM.getSelectedSensorPosition(0);
-        initencCenter = talC.getSelectedSensorPosition(0);  
+        initEncLeft = talLM.getSelectedSensorPosition(0);
+        initEncRight = talRM.getSelectedSensorPosition(0);
+        initEncCenter = talC.getSelectedSensorPosition(0);  
 
     }
         //Finds the difference between original encoder value and the current to find the distance traveled
         //Double is run for the Left, Right, and Center
         public double getNormalizedPositionL() {
-            return talLM.getSelectedSensorPosition(0) - initencLeft;
+            return talLM.getSelectedSensorPosition(0) - initEncLeft;
         }
         
         public double getNormalizedPositionR() {
-            return talRM.getSelectedSensorPosition(0) - initencRight;
+            return talRM.getSelectedSensorPosition(0) - initEncRight;
         }
 
         public double getNormalizedPositionC() {
-            return talC.getSelectedSensorPosition(0) - initencCenter;
+            return talC.getSelectedSensorPosition(0) - initEncCenter;
         }
         
         //Resets encoder values  
          public void resetEncoders() {
-             initencLeft = talLM.getSelectedSensorPosition(0);
-             initencRight = talRM.getSelectedSensorPosition(0);
-             initencCenter = talC.getSelectedSensorPosition(0);
+             initEncLeft = talLM.getSelectedSensorPosition(0);
+             initEncRight = talRM.getSelectedSensorPosition(0);
+             initEncCenter = talC.getSelectedSensorPosition(0);
         }
         //reset gyro value
         public void resetGyro(){
@@ -89,15 +91,42 @@ public class DriveBase {
         }
 
         //set left, right, and center talons
-        public void setLeft(/*insert double*/){
+        public void setLeft(double v){
+            if(Math.abs(v) > 2){
+            System.out.println("Left side velocity out of range!!");
+            return;
+            }
+
+            if(Math.abs(v) > 0.9){
+                v = 0.9*(v/Math.abs(v));
+            }
+            
+            talLM.set(ControlMode.PercentOutput,v);
+            talLF.set(ControlMode.Follower, DRIVE_TALON_PORT[0]);}
+        
+
+        public void setRight(double v){
+            if(Math.abs(v) > 2){
+                System.out.println("Right side velocity out of range!!");
+                return;
+            }
+            if(Math.abs(v) > 0.9){
+                v = 0.9*(v/Math.abs(v));
+            }
+            talRM.set(ControlMode.PercentOutput, v);
+            talRF.set(ControlMode.Follower, DRIVE_TALON_PORT[2]);
 
         }
 
-        public void setRight(/*insert double*/){
-
-        }
-
-        public void setCenter(/*insert double*/){
+        public void setCenter(double v){
+            if(Math.abs(v) > 2){
+                System.out.println("Right side velocity out of range!!");
+                return;
+            }
+            if(Math.abs(v) > 0.9){
+                v = 0.9*(v/Math.abs(v));
+            }
+            talC.set(ControlMode.PercentOutput, v);
 
         }
 
@@ -113,11 +142,11 @@ public class DriveBase {
             //insert drive control code
         }
 
-        public boolean turn(/*double angle,speed*/){
+        //public boolean turn(/*double angle,speed*/){
             //code to return turn complete T/F
-        }
+       // }
 
-        public void pidControl(/*pid constants*/){
+        public void configPIDControl(/*pid constants*/){
             //pid config
         }
 }
