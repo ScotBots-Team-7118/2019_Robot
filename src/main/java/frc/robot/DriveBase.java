@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Talon;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import org.usfirst.frc.team7118.robot.RobotObject;
 
 public class DriveBase {
     // Object declaraction
@@ -38,7 +37,7 @@ public class DriveBase {
 
 
 
-    public Drive (Gyroscope gyro){
+    public void Drive(Gyroscope gyro) {
         //Get instance of gyro
         this.gyro = gyro;
         //initlizes drive talons
@@ -59,30 +58,30 @@ public class DriveBase {
         talC.setSensorPhase(true);
 
         //Gets encdoer value for future reference in getNormalizedPosition 
-        initencLeft = getSelectedSensorPosition(0);
-        initencRight = getSelectedSensorPosition(0);
-        initencCenter = getSelectedSensorPosition(0);  
+        initencLeft = talLM.getSelectedSensorPosition(0);
+        initencRight = talRM.getSelectedSensorPosition(0);
+        initencCenter = talC.getSelectedSensorPosition(0);  
 
     }
         //Finds the difference between original encoder value and the current to find the distance traveled
         //Double is run for the Left, Right, and Center
         public double getNormalizedPositionL() {
-            return talLM.getSelectedSensorPosition(0) - initEncLeft;
+            return talLM.getSelectedSensorPosition(0) - initencLeft;
         }
         
         public double getNormalizedPositionR() {
-            return talRM.getSelectedSensorPosition(0) - initEncRight;
+            return talRM.getSelectedSensorPosition(0) - initencRight;
         }
 
         public double getNormalizedPositionC() {
-            return talC.getSelectedSensorPosition(0) - initEncCenter;
+            return talC.getSelectedSensorPosition(0) - initencCenter;
         }
         
         //Resets encoder values  
          public void resetEncoders() {
-             initEncLeft = talLM.getSelectedSensorPosition(0);
-             initEncRight = talRM.getSelectedSensorPosition(0);
-             initEncCenter = talC.getSelectedSensorPosition(0);
+             initencLeft = talLM.getSelectedSensorPosition(0);
+             initencRight = talRM.getSelectedSensorPosition(0);
+             initencCenter = talC.getSelectedSensorPosition(0);
         }
         //reset gyro value
         public void resetGyro(){
