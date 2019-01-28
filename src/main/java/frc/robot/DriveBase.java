@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+
 /**
  * Framework for our slide drive base and associated methods.
  */
@@ -56,7 +57,7 @@ public class DriveBase {
     public DriveBase(Gyroscope gyro) {
         //Get instance of gyro
         this.gyro = gyro;
-        //initLizes drive talons
+        //initLizes drive talons                   
         talLM = new TalonSRX(DRIVE_TALON_PORT[0]);
         talLF = new TalonSRX(DRIVE_TALON_PORT[1]);
         talRM = new TalonSRX(DRIVE_TALON_PORT[2]);
@@ -189,7 +190,21 @@ public class DriveBase {
      */
     public void brakeMode(boolean brake) {
         // set talon brakemodes
+        if(brake){
+            talLM.setNeutralMode(NeutralMode.Brake);
+            talLF.setNeutralMode(NeutralMode.Brake);
+            talRM.setNeutralMode(NeutralMode.Brake);
+            talRF.setNeutralMode(NeutralMode.Brake);
+            talC.setNeutralMode(NeutralMode.Brake);
+        }else{
+            talLM.setNeutralMode(NeutralMode.Coast);
+            talLF.setNeutralMode(NeutralMode.Coast);
+            talRM.setNeutralMode(NeutralMode.Coast);
+            talRF.setNeutralMode(NeutralMode.Coast);
+            talC.setNeutralMode(NeutralMode.Coast);
+        }
     }
+
 
     /**
      * Drives the robot according to a single joystick
@@ -198,7 +213,9 @@ public class DriveBase {
      * @param axisY
      */
     public void teleopDrive(double axisX, double axisY) {
-        // insert drive control code
+            setRight(0.25*(Math.pow(axisY, 3)));
+            setLeft(0.25*(Math.pow(axisY, 3)));
+            setCenter(0.25*(Math.pow(axisX, 3)));
     }
 
     // /**
