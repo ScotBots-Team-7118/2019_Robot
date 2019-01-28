@@ -189,7 +189,21 @@ public class DriveBase {
      */
     public void brakeMode(boolean brake) {
         // set talon brakemodes
+        if(brake){
+            talLM.setNeutralMode(NeutralMode.Brake);
+            talLF.setNeutralMode(NeutralMode.Brake);
+            talRM.setNeutralMode(NeutralMode.Brake);
+            talRF.setNeutralMode(NeutralMode.Brake);
+            talC.setNeutralMode(NeutralMode.Brake);
+        }else{
+            talLM.setNeutralMode(NeutralMode.Coast);
+            talLF.setNeutralMode(NeutralMode.Coast);
+            talRM.setNeutralMode(NeutralMode.Coast);
+            talRF.setNeutralMode(NeutralMode.Coast);
+            talC.setNeutralMode(NeutralMode.Coast);
+        }
     }
+
 
     /**
      * Drives the robot according to a single joystick
@@ -198,9 +212,11 @@ public class DriveBase {
      * @param axisY
      */
     public void teleopDrive(double axisX, double axisY) {
-        // insert drive control code
+            setRight(0.25*(Math.pow(axisY, 3)));
+            setLeft(0.25*(Math.pow(axisY, 3)));
+            setCenter(0.25*(Math.pow(axisX, 3)));
     }
-
+    
     // /**
     //  * Turns the robot a given number of degrees at a set speed.
     //  * @param angle
