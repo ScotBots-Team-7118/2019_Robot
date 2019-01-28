@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Talon;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import java.lang.Math;
 
 /**
  * Framework for our slide drive base and associated methods.
@@ -56,7 +57,7 @@ public class DriveBase {
     public DriveBase(Gyroscope gyro) {
         //Get instance of gyro
         this.gyro = gyro;
-        //initLizes drive talons
+        //initLizes drive talons                   
         talLM = new TalonSRX(DRIVE_TALON_PORT[0]);
         talLF = new TalonSRX(DRIVE_TALON_PORT[1]);
         talRM = new TalonSRX(DRIVE_TALON_PORT[2]);
@@ -189,6 +190,39 @@ public class DriveBase {
      */
     public void brakeMode(boolean brake) {
         // set talon brakemodes
+        if(brake){
+            talLM.setNeutralMode(NeutralMode.Brake);
+            talLF.setNeutralMode(NeutralMode.Brake);
+            talRM.setNeutralMode(NeutralMode.Brake);
+            talRF.setNeutralMode(NeutralMode.Brake);
+            talC.setNeutralMode(NeutralMode.Brake);
+        }else{
+            talLM.setNeutralMode(NeutralMode.Coast);
+            talLF.setNeutralMode(NeutralMode.Coast);
+            talRM.setNeutralMode(NeutralMode.Coast);
+            talRF.setNeutralMode(NeutralMode.Coast);
+            talC.setNeutralMode(NeutralMode.Coast);
+        }
+    }
+    /**
+     * set y axis talon values to y axis on joystick
+     * @param axisY
+     */
+    public void setY(double amountY){
+        //set left side talons 
+        talLM.set(ControlMode.PercentOutput, amountY);
+        talLF.set(ControlMode.Follower, DRIVE_TALON_PORT[2]);
+        //set right side talons
+        talRM.set(ControlMode.PercentOutput, amountY);
+        talRF.set(ControlMode.Follower, DRIVE_TALON_PORT[1]);
+    }
+    /**
+     * set center talon to x axis on joystick
+     * @param amountX
+     */
+    public void setX(double amountX){
+        //set center talons
+        talC.set(ControlMode.PercentOutput, amountX);
     }
 
     /**
@@ -198,7 +232,14 @@ public class DriveBase {
      * @param axisY
      */
     public void teleopDrive(double axisX, double axisY) {
-        // insert drive control code
+       //create deadzone for joystick
+        if(-0.1>axisY || 0.1<axisY){
+            //using cubic function to scale
+            setY(0.25*(Math.pow(axisY, 3)));
+        }
+        if(-0.1>axisX || 0.1<axisX){
+            setX(0.25*(Math.pow(axisX, 3)));
+        }
     }
 
     // /**
