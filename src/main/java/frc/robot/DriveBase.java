@@ -145,7 +145,7 @@ public class DriveBase {
      * @param v
      */
     public void setRight(double v) {
-        if (Math.abs(v) > 2) {
+        if (Math.abs(v) > JOYSTICK_DEADZONE) {
             System.out.println("Right side velocity out of range!!");
             return;
         }
@@ -163,7 +163,7 @@ public class DriveBase {
      * @param v
      */
     public void setCenter(double v) {
-        if (Math.abs(v) > 2) {
+        if (Math.abs(v) > JOYSTICK_DEADZONE) {
             System.out.println("Right side velocity out of range!!");
             return;
         }
@@ -209,10 +209,38 @@ public class DriveBase {
      * @param axisX
      * @param axisY
      */
-    public void spin(double axisY, double axisZ){
-       //set left and right sides, in coordination with z axis to scale
-        setRight(0.5*(Math.pow(axisY, 3)+ (0.5*axisZ)));
-        setLeft(0.5*(Math.pow(axisY + (0.5*axisZ), 3)+ (0.5*axisZ)));
+    public double[] Determine_Axis_Values(double Xset, double Yset, double Zset, boolean buttonPress)
+    {
+        double[] outputs = new double[3];
+        // [0] = Left Speed
+        // [1] = Right Speed
+        // [2] = Center
+
+        // some math (i crave alive'nt)
+        if (Math.abs(Xset) > JOYSTICK_DEADZONE)
+        {
+            outputs[2] = Xset;
+        }
+     
+        if(buttonPress) 
+        {
+            outputs[0] = Zset;
+            outputs[1] = -Zset;
+        }
+        else 
+        {
+            if (Yset > JOYSTICK_DEADZONE)
+            {
+                outputs[0] = Yset + Zset;
+                outputs[1] = Yset;
+            }
+            else if(Yset < JOYSTICK_DEADZONE)
+            {
+                outputs[1] = Yset - Zset;
+                outputs[0] = Yset;
+            }
+        }
+        return outputs;
     }
 
     /**
@@ -221,14 +249,13 @@ public class DriveBase {
      * @param axisX
      * @param axisY
      */
-    public void teleopDrive(double axisX, double axisY, double axisZ) {
-           if(Math.abs(axisZ)>0.2){
-            setRight(Math.pow(axisY, 3));
-            setLeft(Math.pow(axisY, 3));
-            setCenter(Math.pow(axisX, 3));
-           }else{
-            spin(axisY, axisZ);
-           }
+    public void teleopDrive(double axisX, double axisY, double axisZ, boolean buttonPress) 
+    {
+        double[] spinReturn = Determine_Axis_Values(axisX, axisY, axisZ, buttonPress);
+
+        setRight(Math.pow(spinReturn[0], 3));
+        setLeft(Math.pow(spinReturn[1], 3));
+        setCenter(Math.pow(spinReturn[2], 3));
     }
     
     // /**
