@@ -145,7 +145,7 @@ public class DriveBase {
      * @param v
      */
     public void setRight(double v) {
-        if (Math.abs(v) > 2) {
+        if (Math.abs(v) > JOYSTICK_DEADZONE) {
             System.out.println("Right side velocity out of range!!");
             return;
         }
@@ -163,7 +163,7 @@ public class DriveBase {
      * @param v
      */
     public void setCenter(double v) {
-        if (Math.abs(v) > 2) {
+        if (Math.abs(v) > JOYSTICK_DEADZONE) {
             System.out.println("Right side velocity out of range!!");
             return;
         }
@@ -189,6 +189,58 @@ public class DriveBase {
      */
     public void brakeMode(boolean brake) {
         // set talon brakemodes
+        if(brake){
+            talLM.setNeutralMode(NeutralMode.Brake);
+            talLF.setNeutralMode(NeutralMode.Brake);
+            talRM.setNeutralMode(NeutralMode.Brake);
+            talRF.setNeutralMode(NeutralMode.Brake);
+            talC.setNeutralMode(NeutralMode.Brake);
+        }else{
+            talLM.setNeutralMode(NeutralMode.Coast);
+            talLF.setNeutralMode(NeutralMode.Coast);
+            talRM.setNeutralMode(NeutralMode.Coast);
+            talRF.setNeutralMode(NeutralMode.Coast);
+            talC.setNeutralMode(NeutralMode.Coast);
+        }
+    }
+
+    /**
+     * Turn robot on spot using z axis 
+     * @param axisX
+     * @param axisY
+     */
+    public double[] Determine_Axis_Values(double Xset, double Yset, double Zset, boolean buttonPress)
+    {
+        double[] outputs = new double[3];
+        // [0] = Left Speed
+        // [1] = Right Speed
+        // [2] = Center
+
+        // some math (i crave alive'nt)
+        if (Math.abs(Xset) > JOYSTICK_DEADZONE)
+        {
+            outputs[2] = Xset;
+        }
+     
+        if(buttonPress) 
+        {
+            outputs[0] = Zset;
+            outputs[1] = -Zset;
+        }
+        else 
+        {
+            if (Yset > JOYSTICK_DEADZONE)
+            {
+                outputs[0] = Yset + Zset;
+                outputs[1] = Yset;
+            }
+            else if(Yset < JOYSTICK_DEADZONE)
+            {
+                outputs[1] = Yset - Zset;
+                outputs[0] = Yset;
+            }
+        }
+        return outputs;
     }
 
     /**
@@ -197,10 +249,15 @@ public class DriveBase {
      * @param axisX
      * @param axisY
      */
-    public void teleopDrive(double axisX, double axisY) {
-        // insert drive control code
-    }
+    public void teleopDrive(double axisX, double axisY, double axisZ, boolean buttonPress) 
+    {
+        double[] spinReturn = Determine_Axis_Values(axisX, axisY, axisZ, buttonPress);
 
+        setRight(Math.pow(spinReturn[0], 3));
+        setLeft(Math.pow(spinReturn[1], 3));
+        setCenter(Math.pow(spinReturn[2], 3));
+    }
+    
     // /**
     //  * Turns the robot a given number of degrees at a set speed.
     //  * @param angle
