@@ -204,6 +204,16 @@ public class DriveBase {
         }
     }
 
+    /**
+     * Turn robot on spot using z axis 
+     * @param axisX
+     * @param axisY
+     */
+    public void spin(double axisY, double axisZ){
+       //set left and right sides, in coordination with z axis to scale
+        setRight(0.5*(Math.pow(axisY, 3)+ (0.5*axisZ)));
+        setLeft(0.5*(Math.pow(axisY + (0.5*axisZ), 3)+ (0.5*axisZ)));
+    }
 
     /**
      * Drives the robot according to a single joystick
@@ -211,10 +221,14 @@ public class DriveBase {
      * @param axisX
      * @param axisY
      */
-    public void teleopDrive(double axisX, double axisY) {
-            setRight(0.25*(Math.pow(axisY, 3)));
-            setLeft(0.25*(Math.pow(axisY, 3)));
-            setCenter(0.25*(Math.pow(axisX, 3)));
+    public void teleopDrive(double axisX, double axisY, double axisZ) {
+           if(Math.abs(axisZ)>0.2){
+            setRight(Math.pow(axisY, 3));
+            setLeft(Math.pow(axisY, 3));
+            setCenter(Math.pow(axisX, 3));
+           }else{
+            spin(axisY, axisZ);
+           }
     }
     
     // /**
