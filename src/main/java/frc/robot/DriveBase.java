@@ -84,6 +84,7 @@ public class DriveBase {
      * @return
      */
     public double getNormalizedPositionL() {
+        
         return talLM.getSelectedSensorPosition(0) - initEncLeft;
     }
         
@@ -92,6 +93,7 @@ public class DriveBase {
      * @return
      */
     public double getNormalizedPositionR() {
+
         return talRM.getSelectedSensorPosition(0) - initEncRight;
     }
 
@@ -100,6 +102,7 @@ public class DriveBase {
      * @return
      */
     public double getNormalizedPositionC() {
+
         return talC.getSelectedSensorPosition(0) - initEncCenter;
     }
         
@@ -107,6 +110,7 @@ public class DriveBase {
      * Resets the distance traveled by the encoders for the normalized positions.
      */
     public void resetEncoders() {
+
         initEncLeft = talLM.getSelectedSensorPosition(0);
         initEncRight = talRM.getSelectedSensorPosition(0);
         initEncCenter = talC.getSelectedSensorPosition(0);
@@ -205,54 +209,29 @@ public class DriveBase {
     }
 
     /**
-     * Turn robot on spot using z axis 
-     * @param axisX
-     * @param axisY
+     * format joystick inputs into an array
+     * @param x
+     * @param y
+     * @param z
+     * @return
      */
-    public double[] Determine_Axis_Values(double Xset, double Yset, double Zset, boolean buttonPress)
-    {
-        double[] outputs = new double[3];
-        // [0] = Left Speed
-        // [1] = Right Speed
-        // [2] = Center
-
-        // some math (i crave alive'nt)
-        if (Math.abs(Xset) > JOYSTICK_DEADZONE)
-        {
-            outputs[2] = Xset;
-        }
-     
-        if(buttonPress) 
-        {
-            outputs[0] = Zset;
-            outputs[1] = -Zset;
-        }
-        else 
-        {
-            if (Yset > JOYSTICK_DEADZONE)
-            {
-                outputs[0] = Yset + Zset;
-                outputs[1] = Yset;
-            }
-            else if(Yset < JOYSTICK_DEADZONE)
-            {
-                outputs[1] = Yset - Zset;
-                outputs[0] = Yset;
-            }
-        }
-        return outputs;
+    public double[] formatDriveJoystick(double x, double y, double z) {
+        double[] joyArray = {x, y, z};
+        return joyArray;
     }
 
     /**
      * Drives the robot according to a single joystick
      * with 360 degrees of freedom.
-     * @param axisX
-     * @param axisY
+     * @param joyR
+     * @param joyL
      */
-    public void teleopDrive(double axisX, double axisY, double axisZ, boolean buttonPress) 
+    public void teleopDrive(double[] joyR, double[] joyL) 
     {
-        double[] spinReturn = Determine_Axis_Values(axisX, axisY, axisZ, buttonPress);
+        //set up array of joy valus to input into drive methods
+        double[] spinReturn = {joyL[2], joyR[2],((joyR[1] + joyL[1])/2)};
 
+        //input joy commands into drive methods w/ cubic function
         setRight(Math.pow(spinReturn[0], 3));
         setLeft(Math.pow(spinReturn[1], 3));
         setCenter(Math.pow(spinReturn[2], 3));
