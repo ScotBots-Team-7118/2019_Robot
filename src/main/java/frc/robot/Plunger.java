@@ -33,7 +33,7 @@ public class Plunger{
      * Constructs a new plunger object.
      */
     public Plunger(){
-
+    
         // object initialization
         upstreamSolenoid = new Solenoid(UPSTREAM_SOLENOID_CHANNEL);
         downstreamSolenoid = new Solenoid(DOWNSTREAM_SOLENOID_CHANNEL);
@@ -206,6 +206,6 @@ public class Plunger{
      * @param pistonButton
      */
     public void plungerPiston(boolean pistonButton){
-
+        //run double solenoid!
     }
 }

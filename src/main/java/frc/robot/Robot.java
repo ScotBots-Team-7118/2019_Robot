@@ -9,6 +9,7 @@ package frc.robot;
 
 // Imports for the Robot.java class
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,16 +20,24 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public class Robot extends TimedRobot {
   // Object Declaration.
-
+  DriveBase drive;
+  Plunger plunger;
+  Joystick rawJoyR, rawJoyL;
   // Variable Declaration.
-
+  private final int JOY_R_PORT = 0;
+  private final int JOY_L_PORT = 0;
+  private double[] joyR = {0, 0, 0}, joyL = {0, 0, 0};
+  private final int SUCTION_BUTTON = 1;
+  private final int PISTON_BUTTON = 2;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
-    
+    //Init joysticks
+    rawJoyR = new Joystick(JOY_R_PORT);
+    rawJoyL = new Joystick(JOY_L_PORT);
   }
 
   /**
@@ -82,6 +91,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    //send joy data to format method in DriveBase
+    joyR = drive.formatDriveJoystick(rawJoyR.getRawAxis(0), rawJoyR.getRawAxis(1), rawJoyR.getRawAxis(2));
+    joyL = drive.formatDriveJoystick(rawJoyL.getRawAxis(0), rawJoyL.getRawAxis(1), rawJoyL.getRawAxis(2));
+    //send formatted data arrays to drive method in DriveBase
+    drive.teleopDrive(joyR, joyL);
+    //run suction loop for plunger
+    plunger.runPlunger(rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
+    //run pneumatic piston for plunger
+    plunger.plungerPiston(rawJoyR.getRawButtonPressed(PISTON_BUTTON));
+
   }
 
   /**
