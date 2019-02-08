@@ -3,7 +3,7 @@ package frc.robot;
 // Imports for the "DriveBase.java" class.
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Talon;
-
+import edu.wpi.first.wpilibj.Joystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -15,6 +15,8 @@ public class DriveBase {
     // Object declaraction
     private Gyroscope gyro;
     private TalonSRX talLM, talLF, talRM, talRF, talC;
+
+    Joystick joyL, joyR;
 
     // Constant inititalization
     // Talon Port values  
@@ -48,12 +50,19 @@ public class DriveBase {
     //Stores encoder position
     private double initEncLeft, initEncRight, initEncCenter;
 
+    //joystick ports
+    public static final int JOYR_PORT = 0;
+    public static final int JOYL_PORT = 0;
+
     /**
      * Constructs a new DriveBase object.
      * 
      * @param Gyroscope gyro
      */
     public DriveBase(Gyroscope gyro) {
+       //init joysticks
+        joyL = new Joystick(JOYL_PORT);
+        joyR = new Joystick(JOYR_PORT);
         //Get instance of gyro
         this.gyro = gyro;
         //initLizes drive talons
@@ -84,7 +93,7 @@ public class DriveBase {
      * @return
      */
     public double getNormalizedPositionL() {
-        
+
         return talLM.getSelectedSensorPosition(0) - initEncLeft;
     }
         
