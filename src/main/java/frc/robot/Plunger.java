@@ -3,7 +3,6 @@ package frc.robot;
 //imports
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
@@ -18,7 +17,6 @@ public class Plunger{
     AnalogInput vacuumSensor;
     plungerState state;
     Timer timer;
-    Joystick joy;
     
 
     //Solenoid channels
@@ -31,16 +29,12 @@ public class Plunger{
     public static final double VACUUM_SENSOR_GOOD_VAC = 20;
     public static final double VACUUM_SENSOR_MIN_VAC = 15; 
 
-    //joystick controls
-    public static final int PLUNGER_SUCTION_BUTTON = 0;
-
     /**
      * Constructs a new plunger object.
      */
-    public Plunger(DriveBase drive){
+    public Plunger(){
 
         // object initialization
-        joy = drive.joyR;
         upstreamSolenoid = new Solenoid(UPSTREAM_SOLENOID_CHANNEL);
         downstreamSolenoid = new Solenoid(DOWNSTREAM_SOLENOID_CHANNEL);
         pressureSensor = new AnalogInput(PRESSURE_SENSOR_CHANNEL);
@@ -78,11 +72,11 @@ public class Plunger{
     
     /**
      * control pulse, pickup, and dropping game piece 
+     * @param buttonPress
      */
-    public void runPlunger(){
-       //button to change to drop or vaccum
-       boolean buttonPress = joy.getRawButtonPressed(PLUNGER_SUCTION_BUTTON);
-       
+    public void runPlunger(boolean buttonPress){
+
+
        //state change requirements
         switch(state){
             case CLOSED:
@@ -209,17 +203,9 @@ public class Plunger{
     
     /**
      * use button to operate piston
-     * @param buttonPress
+     * @param pistonButton
      */
-    public void plungerPiston(boolean buttonPress){
+    public void plungerPiston(boolean pistonButton){
 
     }
-
-    // /**
-    //  * Flips solenoid to other setting (T/F).
-    //  */
-    // public void flipSolenoid(){
-    //     upstreamSolenoid.set(!upstreamSolenoid.get());
-    // }
-
 }
