@@ -13,6 +13,7 @@ public class Plunger{
     // object declaration
     Solenoid upstreamSolenoid;
     Solenoid downstreamSolenoid;
+    Solenoid piston;
     AnalogInput pressureSensor;
     AnalogInput vacuumSensor;
     plungerState state;
@@ -22,12 +23,13 @@ public class Plunger{
     //Solenoid channels
     public static final int UPSTREAM_SOLENOID_CHANNEL = 0;
     public static final int DOWNSTREAM_SOLENOID_CHANNEL = 0;
+    public static final int PISTON_SOLENOID_CHANNEL = 0;
     public static final int PRESSURE_SENSOR_CHANNEL = 0;
     public static final int VACUUM_SENSOR_CHANNEL = 0;
 
     //Solenoid sensor variables
-    public static final double VACUUM_SENSOR_GOOD_VAC = 20;
-    public static final double VACUUM_SENSOR_MIN_VAC = 15; 
+    public static final double VACUUM_SENSOR_GOOD_VAC = 30;
+    public static final double VACUUM_SENSOR_MIN_VAC = 24; 
 
     /**
      * Constructs a new plunger object.
@@ -37,6 +39,7 @@ public class Plunger{
         // object initialization
         upstreamSolenoid = new Solenoid(UPSTREAM_SOLENOID_CHANNEL);
         downstreamSolenoid = new Solenoid(DOWNSTREAM_SOLENOID_CHANNEL);
+        piston = new Solenoid(PISTON_SOLENOID_CHANNEL);
         pressureSensor = new AnalogInput(PRESSURE_SENSOR_CHANNEL);
         vacuumSensor = new AnalogInput(VACUUM_SENSOR_CHANNEL);
         timer = new Timer();
@@ -206,6 +209,11 @@ public class Plunger{
      * @param pistonButton
      */
     public void plungerPiston(boolean pistonButton){
-        //run double solenoid!
+        if (pistonButton)
+        {
+            piston.set(true);
+        } else {
+            piston.set(false);
+        }
     }
 }
