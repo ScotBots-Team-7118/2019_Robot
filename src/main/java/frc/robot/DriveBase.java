@@ -2,7 +2,6 @@ package frc.robot;
 
 // Imports for the "DriveBase.java" class.
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.Talon;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -12,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
  */
 public class DriveBase {
     // Object declaraction
-    private Gyroscope gyro;
     private TalonSRX talLM, talLF, talRM, talRF, talC;
     // Constant inititalization
     // Talon Port values  
@@ -25,20 +23,20 @@ public class DriveBase {
     // Drive speed for autonomous movement
     private final int AUTO_DRIVE_SPEED = 0;
 
-    // Constants for PID drive
-    private final double kF = 0;
-    private final double kP = 0;
-    private final double kI = 0;
-    private final double kD = 0;
+    // // Constants for PID drive
+    // private final double kF = 0;
+    // private final double kP = 0;
+    // private final double kI = 0;
+    // private final double kD = 0;
 
-    // Variables for the turn method
-    private final double TURN_OFFSET = 0;
-    private final double MIN_TURN_SPEED = 0;
-    private final double MAX_TURN_SPEED = 0;
-    private final double MIN_DEGREES_FULL_SPEED = 0;
+    // // Variables for the turn method
+    // private final double TURN_OFFSET = 0;
+    // private final double MIN_TURN_SPEED = 0;
+    // private final double MAX_TURN_SPEED = 0;
+    // private final double MIN_DEGREES_FULL_SPEED = 0;
 
-    // The number of encoder rotations in a single foot
-    private final int ROTATIONS_TO_FEET = 0;
+    // // The number of encoder rotations in a single foot
+    // private final int ROTATIONS_TO_FEET = 0;
 
     // Maximum speed at which the drive train is allowed to move
     private final double MAXIMUM_DRIVE_TALON_INPUT = 0.9;
@@ -49,13 +47,8 @@ public class DriveBase {
 
     /**
      * Constructs a new DriveBase object.
-     * 
-     * @param Gyroscope gyro
      */
-    public DriveBase(Gyroscope gyro) {
-        // Stores the correct instance of the gyroscope in the class for reference
-        this.gyro = gyro;
-
+    public DriveBase() {
         // Drive Talon Initialization
         talLM = new TalonSRX(DRIVE_TALON_PORT[0]);
         talLF = new TalonSRX(DRIVE_TALON_PORT[1]);
@@ -105,14 +98,6 @@ public class DriveBase {
         initEncLeft = talLM.getSelectedSensorPosition(0);
         initEncRight = talRM.getSelectedSensorPosition(0);
         initEncCenter = talC.getSelectedSensorPosition(0);
-    }
-
-    
-    /**
-     * Accessor method that resets the gyroscope.
-     */
-    public void resetGyro() {
-        gyro.reset();
     }
 
     /**
