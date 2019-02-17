@@ -4,6 +4,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Compressor;
 
 /**
  *  Controls plunger mechanism.
@@ -18,6 +19,7 @@ public class Plunger{
     AnalogInput vacuumSensor;
     plungerState state;
     Timer timer;
+    Compressor compressor;
     
 
     //Solenoid channels
@@ -26,6 +28,7 @@ public class Plunger{
     public static final int PISTON_SOLENOID_CHANNEL = 0;
     public static final int PRESSURE_SENSOR_CHANNEL = 0;
     public static final int VACUUM_SENSOR_CHANNEL = 0;
+    public static final int COMPRESSOR_CHANNEL = 0
 
     //Solenoid sensor variables
     public static final double VACUUM_SENSOR_GOOD_VAC = 30;
@@ -42,6 +45,7 @@ public class Plunger{
         piston = new Solenoid(PISTON_SOLENOID_CHANNEL);
         pressureSensor = new AnalogInput(PRESSURE_SENSOR_CHANNEL);
         vacuumSensor = new AnalogInput(VACUUM_SENSOR_CHANNEL);
+        compressor = new Compressor(COMPRESSOR_CHANNEL);
         timer = new Timer();
         timer.start();
     }
@@ -58,6 +62,35 @@ public class Plunger{
      */
     public double getVacuum(){
         return ((vacuumSensor.getVoltage()*11.125)-20.0625);
+    }
+       
+    /**
+     * runs compressor if below max pressure
+     */
+    public void Compressor(){
+        if (115 >= getPressure())
+        {
+            compressor.start();
+        } else{
+            compressor.stop();
+        }
+    }
+
+    /**
+     * returns if compressor is on
+     * @return
+     */
+    public boolean getCompressor(){
+        return compressor.enabled();
+    }
+
+    /**
+     * return which solenoids are on at a given time: upstream, downstream
+     * @return
+     */
+    public boolean[] getSolenoid(){
+        boolean[] output = {upstreamSolenoid.get(), downstreamSolenoid.get()};
+        return output;
     }
 
     /**
