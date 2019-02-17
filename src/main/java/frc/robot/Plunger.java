@@ -82,6 +82,7 @@ public class Plunger{
 
        //state change requirements
         switch(state){
+           //on button press, vacuum
             case CLOSED:
             if(buttonPress)
             {
@@ -91,6 +92,7 @@ public class Plunger{
            
             break;
 
+            //on reaching psi, switch to hold
             case VACUUM_ON:
             if(getVacuum() >= VACUUM_SENSOR_GOOD_VAC)
             {
@@ -99,12 +101,14 @@ public class Plunger{
             }
             else if(buttonPress)
             {
+                //if button, drop
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
             
             break;
 
+            //after period of time, switch 
             case VACUUM_TO_HOLD:
             if(timer.hasPeriodPassed(0.01))
             {
@@ -113,12 +117,14 @@ public class Plunger{
             }
             else if(buttonPress)
             {
+                //if button, drop
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
 
             break;
 
+            //if low pressure, switch
             case HOLD:
             if(getVacuum() <= VACUUM_SENSOR_MIN_VAC)
             {
@@ -127,12 +133,14 @@ public class Plunger{
             }
             else if(buttonPress)
             {
+                //if button, drop
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
 
             break;
 
+            //if time has passed, switch
             case HOLD_TO_VACUUM:
             if(timer.hasPeriodPassed(0.01))
             {
@@ -141,12 +149,14 @@ public class Plunger{
             }
             else if(buttonPress)
             {
+                //if button, drop
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
 
             break;
 
+            //release pressure on plunger, switch to closed state tod reset cycle
             case DROP_STATE:
             if(timer.hasPeriodPassed(1))
             {
@@ -160,13 +170,15 @@ public class Plunger{
         //state governs which solenoids are open
         switch(state){
             
+            //all solenoids closed
             case CLOSED:
-
+            
             upstreamSolenoid.set(false);
             downstreamSolenoid.set(false);
 
             break;
 
+            //all solenoids open
             case VACUUM_ON:
 
             upstreamSolenoid.set(true);
@@ -174,6 +186,7 @@ public class Plunger{
 
             break;
 
+            //close downstream solenoid to retain vacuum in suction cup
             case VACUUM_TO_HOLD:
 
             upstreamSolenoid.set(true);
@@ -181,6 +194,7 @@ public class Plunger{
             
             break;
 
+            //close upstream (downstream already closed), conserve air to refresh required
             case HOLD:
  
             upstreamSolenoid.set(false);
@@ -188,6 +202,7 @@ public class Plunger{
             
             break;
 
+            //prepare to refresh vacuum, open upstream solenoid
             case HOLD_TO_VACUUM:
 
             upstreamSolenoid.set(true);
@@ -195,6 +210,7 @@ public class Plunger{
             
             break;
 
+            //close upstream, open downstream, release pressure through vac gen
             case DROP_STATE:
 
             downstreamSolenoid.set(true);
@@ -209,11 +225,15 @@ public class Plunger{
      * @param pistonButton
      */
     public void plungerPiston(boolean pistonButton){
+       //on button press, change solenoid (if bool input is based on last press)
         if (pistonButton)
         {
             piston.set(true);
         } else {
             piston.set(false);
         }
+        
+        // if button is realtime press, run line below by itself on button press (no bool input)
+        // piston.set(!piston.get());
     }
 }
