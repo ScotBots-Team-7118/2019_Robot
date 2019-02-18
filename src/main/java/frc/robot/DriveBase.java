@@ -15,13 +15,13 @@ public class DriveBase {
     // Constant inititalization
     // Talon Port values  
     // Order as follows: Right-Master, Right-Follower, Left-Master, Left-Follower, Center
-    private final int[] DRIVE_TALON_PORT = {0, 0, 0, 0, 0};
+    private final int[] DRIVE_TALON_PORT = {7, 4, 5, 1, 6};
 
     // Minimum joystick movement required for robot control
     private final double JOYSTICK_DEADZONE = 0.1;
 
     // Drive speed for autonomous movement
-    private final int AUTO_DRIVE_SPEED = 0;
+    private final Double AUTO_DRIVE_SPEED = 0.1;
 
     // // Constants for PID drive
     // private final double kF = 0;

@@ -21,13 +21,11 @@ public class Plunger {
     plungerState state;
 
     // Solenoid channels
-    public static final int UPSTREAM_SOLENOID_CHANNEL = 0;
-    public static final int DOWNSTREAM_SOLENOID_CHANNEL = 0;
+    public static final int UPSTREAM_SOLENOID_CHANNEL = 1;
+    public static final int DOWNSTREAM_SOLENOID_CHANNEL = 2;
+    public static final int PRESSURE_SENSOR_CHANNEL = 3;
+    public static final int VACUUM_SENSOR_CHANNEL = 4;
     public static final int PISTON_SOLENOID_CHANNEL = 0;
-    public static final int PRESSURE_SENSOR_CHANNEL = 0;
-    public static final int VACUUM_SENSOR_CHANNEL = 0;
-    public static final int COMPRESSOR_CHANNEL = 0;
-
     //Solenoid sensor variables
     public static final double VACUUM_SENSOR_IDEAL_VAC = 30;
     public static final double VACUUM_SENSOR_MIN_VAC = 20; 
@@ -43,7 +41,7 @@ public class Plunger {
         piston = new Solenoid(PISTON_SOLENOID_CHANNEL);
         pressureSensor = new AnalogInput(PRESSURE_SENSOR_CHANNEL);
         vacuumSensor = new AnalogInput(VACUUM_SENSOR_CHANNEL);
-        compressor = new Compressor(COMPRESSOR_CHANNEL);
+        compressor = new Compressor();
         timer = new Timer();
         timer.start();
     }
