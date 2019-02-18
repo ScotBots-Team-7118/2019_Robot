@@ -23,12 +23,12 @@ public class Robot extends TimedRobot {
   DriveBase driveBase;
   Gyroscope gyro;
   Joystick rawJoyR, rawJoyL;
-  Pillow pillow;
+  //Pillow pillow;
   Plunger plunger;
 
   // Variable Declaration
   private final int JOY_R_PORT = 0;
-  private final int JOY_L_PORT = 0;
+  private final int JOY_L_PORT = 1;
   private double[] joyR = {0, 0, 0}, joyL = {0, 0, 0};
   private final int SUCTION_BUTTON = 1;
   private final int PISTON_BUTTON = 2;
@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
     rawJoyL = new Joystick(JOY_L_PORT);
     gyro = new Gyroscope();
     driveBase = new DriveBase();
-    pillow = new Pillow();
+    //pillow = new Pillow();
     plunger = new Plunger();
   }
 
@@ -106,10 +106,10 @@ public class Robot extends TimedRobot {
     // Use the formatted joystick data to drive the robot
     driveBase.teleopDrive(joyR, joyL);
     // Run the plunger according to the state machine within the class and the given suction button
-    if (pillow.closedState()) {
-      plunger.runPlunger(rawJoyR.getRawButton(SUCTION_BUTTON));
-    }
-    else plunger.runPlunger(false);
+    // if (pillow.closedState()) {
+    //   plunger.runPlunger(rawJoyR.getRawButton(SUCTION_BUTTON));
+    // }
+    // else plunger.runPlunger(false);
     
     // Run the plunger according to the state machine within the class and the given suction button
     plunger.plungerPiston(rawJoyR.getRawButtonPressed(PISTON_BUTTON));
@@ -120,6 +120,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-
+    // driveBase.setRight(rawJoyR.getRawAxis(1)*0.3);
+    // driveBase.setLeft(rawJoyL.getRawAxis(1)*0.3);
+    // driveBase.setCenter(rawJoyR.getRawAxis(0)*0.3);
+    joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), rawJoyR.getRawAxis(1), rawJoyR.getRawAxis(2));
+    joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), rawJoyL.getRawAxis(1), rawJoyL.getRawAxis(2));
+    driveBase.teleopDrive(joyR, joyL); 
   }
 }

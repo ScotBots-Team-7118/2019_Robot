@@ -14,8 +14,8 @@ public class Pillow {
     private DigitalInput limOpen, limClosed;
 
     // Variable initialization
-    private final int PILLOW_TALON_PORT = 0;
-    private final int PILLOW_TALON_SPEED = 0;
+    private final int PILLOW_TALON_PORT = 3;
+    private final double PILLOW_TALON_SPEED = 0.3;
     private final int STOP = 0;
     private final int FORWARDS = 1;
     private final int BACKWARDS = -1;
@@ -45,6 +45,7 @@ public class Pillow {
      */
     public boolean isOpen(){
         return limOpen.get();
+        
     }
 
     /**
@@ -105,6 +106,9 @@ public class Pillow {
                 run(STOP);
                 state = PillowStates.OPEN;
             }
+            else {
+                run(STOP);
+            }
             break;
 
             // State representing an open and immobile Pillow door
@@ -135,6 +139,9 @@ public class Pillow {
             else if (isClosed()) {
                 run(STOP);
                 state = PillowStates.CLOSED;
+            }
+            else{
+                run(STOP);
             }
         }
     }
