@@ -28,10 +28,10 @@ public class Plunger {
     plungerState state;
 
     // Solenoid channels
-    public static final int UPSTREAM_SOLENOID_CHANNEL = 0;
-    public static final int DOWNSTREAM_SOLENOID_CHANNEL = 0;
-    public static final int PRESSURE_SENSOR_CHANNEL = 0;
-    public static final int VACUUM_SENSOR_CHANNEL = 0;
+    public static final int UPSTREAM_SOLENOID_CHANNEL = 1;
+    public static final int DOWNSTREAM_SOLENOID_CHANNEL = 2;
+    public static final int PRESSURE_SENSOR_CHANNEL = 3;
+    public static final int VACUUM_SENSOR_CHANNEL = 4;
 
     // Solenoid sensor variables
     public static final double VACUUM_SENSOR_GOOD_VAC = 20;
