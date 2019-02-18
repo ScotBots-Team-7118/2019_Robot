@@ -1,38 +1,46 @@
 package frc.robot;
 
-//imports
+// Imports for the Plunger Class
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
- *  Controls plunger mechanism.
+ *  Framework for an object that controls the plunger mechanism.
  */
-public class Plunger{
-
-    // object declaration
+public class Plunger {
+    // Object declaration
     Solenoid upstreamSolenoid;
     Solenoid downstreamSolenoid;
     AnalogInput pressureSensor;
     AnalogInput vacuumSensor;
-    plungerState state;
     Timer timer;
     
+    // The various states of the plunger device
+    public enum plungerState {
+        VACUUM_ON,
+        DROP_STATE,
+        CLOSED,
+        VACUUM_TO_HOLD,
+        HOLD,
+        HOLD_TO_VACUUM
+    }
+    plungerState state;
 
-    //Solenoid channels
+    // Solenoid channels
     public static final int UPSTREAM_SOLENOID_CHANNEL = 0;
     public static final int DOWNSTREAM_SOLENOID_CHANNEL = 0;
     public static final int PRESSURE_SENSOR_CHANNEL = 0;
     public static final int VACUUM_SENSOR_CHANNEL = 0;
 
-    //Solenoid sensor variables
+    // Solenoid sensor variables
     public static final double VACUUM_SENSOR_GOOD_VAC = 20;
     public static final double VACUUM_SENSOR_MIN_VAC = 15; 
 
     /**
      * Constructs a new plunger object.
      */
-    public Plunger(){
+    public Plunger() {
     
         // object initialization
         upstreamSolenoid = new Solenoid(UPSTREAM_SOLENOID_CHANNEL);
@@ -44,113 +52,83 @@ public class Plunger{
     }
 
     /**
-     * convert pressure sensor volts to psi
+     * Converts the pressure sensor volts to psi.
      */
-    public double getPressure(){
+    public double getPressure() {
         return ((pressureSensor.getVoltage()*50.0)-25.0);
     }
 
     /**
-     * convert vacuum sensor volts to psi
+     * Converts the vacuum sensor volts to psi.
      */
-    public double getVacuum(){
+    public double getVacuum() {
         return ((vacuumSensor.getVoltage()*11.125)-20.0625);
-    }
-
-    /**
-     * declares plunger states
-     */
-    public enum plungerState {
-
-        VACUUM_ON,
-        DROP_STATE,
-        CLOSED,
-        VACUUM_TO_HOLD,
-        HOLD,
-        HOLD_TO_VACUUM
     }
     
     /**
-     * control pulse, pickup, and dropping game piece 
+     * Runs the plunger device by controlling pulse, pick-up, and drop-off of the hatch. 
      * @param buttonPress
      */
-    public void runPlunger(boolean buttonPress){
-
-
-       //state change requirements
+    public void runPlunger(boolean buttonPress) {
+       // State change requirements
         switch(state){
+            // NOTE: NATHANIEL COMMENT YOUR STATE MACHINE - Manoli
             case CLOSED:
-            if(buttonPress)
-            {
+            if (buttonPress) {
                 state = plungerState.VACUUM_ON;
                 timer.reset();
             }
-           
             break;
 
             case VACUUM_ON:
-            if(getVacuum() >= VACUUM_SENSOR_GOOD_VAC)
-            {
+            if (getVacuum() >= VACUUM_SENSOR_GOOD_VAC) {
                 state = plungerState.VACUUM_TO_HOLD;
                 timer.reset();    
             }
-            else if(buttonPress)
-            {
+            else if (buttonPress) {
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
-            
             break;
 
             case VACUUM_TO_HOLD:
-            if(timer.hasPeriodPassed(0.01))
-            {
+            if (timer.hasPeriodPassed(0.01)) {
                 state = plungerState.HOLD;
                 timer.reset();
             }
-            else if(buttonPress)
-            {
+            else if (buttonPress) {
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
-
             break;
 
             case HOLD:
-            if(getVacuum() <= VACUUM_SENSOR_MIN_VAC)
-            {
+            if (getVacuum() <= VACUUM_SENSOR_MIN_VAC) {
                 state = plungerState.HOLD_TO_VACUUM;
                 timer.reset();
             }
-            else if(buttonPress)
-            {
+            else if (buttonPress) {
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
-
             break;
 
             case HOLD_TO_VACUUM:
-            if(timer.hasPeriodPassed(0.01))
-            {
+            if (timer.hasPeriodPassed(0.01)) {
                 state = plungerState.VACUUM_ON;
                 timer.reset();
             }
-            else if(buttonPress)
-            {
+            else if (buttonPress) {
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
-
             break;
 
             case DROP_STATE:
-            if(timer.hasPeriodPassed(1))
-            {
+            if (timer.hasPeriodPassed(1)) {
                 state = plungerState.CLOSED;
                 timer.reset();
             }
-
             break;
 
         }
@@ -158,54 +136,47 @@ public class Plunger{
         switch(state){
             
             case CLOSED:
-
-            upstreamSolenoid.set(false);
-            downstreamSolenoid.set(false);
-
+            setSolenoids(false, false);
             break;
 
             case VACUUM_ON:
-
-            upstreamSolenoid.set(true);
-            downstreamSolenoid.set(true);
-
+            setSolenoids(true, true);
             break;
 
             case VACUUM_TO_HOLD:
-
-            upstreamSolenoid.set(true);
-            downstreamSolenoid.set(false);
-            
+            setSolenoids(true, false);
             break;
 
             case HOLD:
- 
-            upstreamSolenoid.set(false);
-            downstreamSolenoid.set(false);
-            
+            setSolenoids(false, false);
             break;
 
             case HOLD_TO_VACUUM:
-
-            upstreamSolenoid.set(true);
-            downstreamSolenoid.set(false);
-            
+            setSolenoids(true, false);
             break;
 
             case DROP_STATE:
-
-            downstreamSolenoid.set(true);
-            upstreamSolenoid.set(false);
-            
+            setSolenoids(false, true);
             break;
         }
     }
     
+    // NOTE: Nathaniel, what is this for? Why do we need this?
     /**
      * use button to operate piston
      * @param pistonButton
      */
     public void plungerPiston(boolean pistonButton){
         //run double solenoid!
+    }
+
+    /**
+     * Sets the solenoids to the given values.
+     * @param upstream
+     * @param downstream
+     */
+    public void setSolenoids(boolean upstream, boolean downstream) {
+        upstreamSolenoid.set(upstream);
+        downstreamSolenoid.set(downstream);
     }
 }
