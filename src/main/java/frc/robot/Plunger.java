@@ -30,7 +30,7 @@ public class Plunger {
 
     //Solenoid sensor variables
     public static final double VACUUM_SENSOR_GOOD_VAC = 30;
-    public static final double VACUUM_SENSOR_MIN_VAC = 24; 
+    public static final double VACUUM_SENSOR_MIN_VAC = 20; 
 
     /**
      * Constructs a new plunger object.
@@ -63,10 +63,10 @@ public class Plunger {
     }
        
     /**
-     * runs compressor if below max pressure
+     * runs compressor if below max pressure (120 psi)
      */
-    public void Compressor(){
-        if (115 >= getPressure())
+    public void compressor(){
+        if (120 > getPressure())
         {
             compressor.start();
         } else{
@@ -75,7 +75,7 @@ public class Plunger {
     }
 
     /**
-     * returns if compressor is on
+     * returns true if compressor is on
      * @return
      */
     public boolean getCompressor(){
@@ -83,7 +83,7 @@ public class Plunger {
     }
 
     /**
-     * return which solenoids are on at a given time: upstream, downstream
+     * return an array of solenoids that are on (T/F)
      * @return
      */
     public boolean[] getSolenoid(){
@@ -105,13 +105,14 @@ public class Plunger {
     }
     
     /**
+     * using first state machine to control state change, second to enact state
      * Runs the plunger device by controlling pulse, pick-up, and drop-off of the hatch. 
      * @param buttonPress
      */
     public void runPlunger(boolean buttonPress) {
        // State change requirements
         switch(state){
-           //on button press, vacuum
+           //on button press, switch to vacuum on
             case CLOSED:
             if (buttonPress) {
                 state = plungerState.VACUUM_ON;
@@ -119,7 +120,7 @@ public class Plunger {
             }
             break;
 
-            //on reaching psi, switch to hold
+            //on 30 psi, switch to hold
             case VACUUM_ON:
             if (getVacuum() >= VACUUM_SENSOR_GOOD_VAC) {
                 state = plungerState.VACUUM_TO_HOLD;
@@ -127,13 +128,13 @@ public class Plunger {
             }
             else if(buttonPress)
             {
-                //if button, drop
+                //if button press, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
             break;
 
-            //after period of time, switch 
+            //after 0.01 sec, switch to hold 
             case VACUUM_TO_HOLD:
             if (timer.hasPeriodPassed(0.01)) {
                 state = plungerState.HOLD;
@@ -141,13 +142,13 @@ public class Plunger {
             }
             else if(buttonPress)
             {
-                //if button, drop
+                //if buttonpress, switch to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
             break;
 
-            //if low pressure, switch
+            //if low pressure( below 20 psi), switch to vacuum
             case HOLD:
             if (getVacuum() <= VACUUM_SENSOR_MIN_VAC) {
                 state = plungerState.HOLD_TO_VACUUM;
@@ -155,13 +156,13 @@ public class Plunger {
             }
             else if(buttonPress)
             {
-                //if button, drop
+                //if buttonpress, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
             break;
 
-            //if time has passed, switch
+            //after 0.01 sec, switch to vacuum on
             case HOLD_TO_VACUUM:
             if (timer.hasPeriodPassed(0.01)) {
                 state = plungerState.VACUUM_ON;
@@ -169,13 +170,13 @@ public class Plunger {
             }
             else if(buttonPress)
             {
-                //if button, drop
+                //if button press, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
             break;
 
-            //release pressure on plunger, switch to closed state tod reset cycle
+            //release pressure on plunger, switch to closed state after 1 sec to reset cycle
             case DROP_STATE:
             if (timer.hasPeriodPassed(1)) {
                 state = plungerState.CLOSED;
@@ -184,6 +185,7 @@ public class Plunger {
             break;
 
         }
+        
         //state governs which solenoids are open
         switch(state){
             
