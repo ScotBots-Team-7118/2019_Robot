@@ -29,7 +29,7 @@ public class Plunger {
     public static final int COMPRESSOR_CHANNEL = 0;
 
     //Solenoid sensor variables
-    public static final double VACUUM_SENSOR_GOOD_VAC = 30;
+    public static final double VACUUM_SENSOR_IDEAL_VAC = 30;
     public static final double VACUUM_SENSOR_MIN_VAC = 20; 
 
     /**
@@ -122,58 +122,57 @@ public class Plunger {
 
             //on 30 psi, switch to hold
             case VACUUM_ON:
-            if (getVacuum() >= VACUUM_SENSOR_GOOD_VAC) {
-                state = plungerState.VACUUM_TO_HOLD;
-                timer.reset();    
-            }
-            else if(buttonPress)
+            if(buttonPress)
             {
                 //if button press, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
+            }else if (getVacuum() >= VACUUM_SENSOR_IDEAL_VAC) {
+                state = plungerState.VACUUM_TO_HOLD;
+                timer.reset();    
             }
             break;
 
             //after 0.01 sec, switch to hold 
             case VACUUM_TO_HOLD:
-            if (timer.hasPeriodPassed(0.01)) {
-                state = plungerState.HOLD;
-                timer.reset();
-            }
-            else if(buttonPress)
+            if(buttonPress)
             {
                 //if buttonpress, switch to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
+            }else if (timer.hasPeriodPassed(0.01)) {
+                state = plungerState.HOLD;
+                timer.reset();
             }
+        
             break;
 
             //if low pressure( below 20 psi), switch to vacuum
             case HOLD:
-            if (getVacuum() <= VACUUM_SENSOR_MIN_VAC) {
-                state = plungerState.HOLD_TO_VACUUM;
-                timer.reset();
-            }
-            else if(buttonPress)
+            if(buttonPress)
             {
                 //if buttonpress, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
+            }else if (getVacuum() <= VACUUM_SENSOR_MIN_VAC) {
+                state = plungerState.HOLD_TO_VACUUM;
+                timer.reset();
             }
+           
             break;
 
             //after 0.01 sec, switch to vacuum on
             case HOLD_TO_VACUUM:
-            if (timer.hasPeriodPassed(0.01)) {
-                state = plungerState.VACUUM_ON;
-                timer.reset();
-            }
-            else if(buttonPress)
+            if(buttonPress)
             {
                 //if button press, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
+            }else if (timer.hasPeriodPassed(0.01)) {
+                state = plungerState.VACUUM_ON;
+                timer.reset();
             }
+           
             break;
 
             //release pressure on plunger, switch to closed state after 1 sec to reset cycle
