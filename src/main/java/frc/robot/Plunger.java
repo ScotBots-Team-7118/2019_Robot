@@ -91,6 +91,35 @@ public class Plunger {
     }
 
     /**
+     * use button to operate piston
+     * 
+     * @param pistonButton
+     */
+    public void plungerPiston(boolean pistonButton) {
+        // on button press, change solenoid (if bool input is based on last press)
+        if (pistonButton) {
+            piston.set(true);
+        } else {
+            piston.set(false);
+        }
+
+        // if button is realtime press, run line below by itself on button press (no
+        // bool input)
+        // piston.set(!piston.get());
+    }
+
+    /**
+     * Sets the solenoids to the given values.
+     * 
+     * @param upstream
+     * @param downstream
+     */
+    public void setSolenoids(boolean upstream, boolean downstream) {
+        upstreamSolenoid.set(upstream);
+        downstreamSolenoid.set(downstream);
+    }
+
+    /**
      * declares plunger states
      */
     public enum plungerState {
@@ -176,7 +205,12 @@ public class Plunger {
             break;
 
         }
+    }
 
+    /**
+     * Changes solenoid based on state
+     */
+    public void runSolenoid() {
         // this swich governs which solenoids are open based on the state
         switch (state) {
 
@@ -210,34 +244,5 @@ public class Plunger {
             setSolenoids(false, true);
             break;
         }
-    }
-
-    /**
-     * use button to operate piston
-     * 
-     * @param pistonButton
-     */
-    public void plungerPiston(boolean pistonButton) {
-        // on button press, change solenoid (if bool input is based on last press)
-        if (pistonButton) {
-            piston.set(true);
-        } else {
-            piston.set(false);
-        }
-
-        // if button is realtime press, run line below by itself on button press (no
-        // bool input)
-        // piston.set(!piston.get());
-    }
-
-    /**
-     * Sets the solenoids to the given values.
-     * 
-     * @param upstream
-     * @param downstream
-     */
-    public void setSolenoids(boolean upstream, boolean downstream) {
-        upstreamSolenoid.set(upstream);
-        downstreamSolenoid.set(downstream);
     }
 }
