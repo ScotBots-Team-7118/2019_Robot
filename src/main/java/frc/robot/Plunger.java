@@ -110,7 +110,7 @@ public class Plunger {
      * @param buttonPress
      */
     public void runPlunger(boolean buttonPress) {
-       // State change requirements
+       // this switch controls the requirments to change states
         switch(state){
            //on button press, switch to vacuum on
             case CLOSED:
@@ -186,7 +186,7 @@ public class Plunger {
 
         }
         
-        //state governs which solenoids are open
+        //this swich governs which solenoids are open based on the state
         switch(state){
             
             //all solenoids closed
