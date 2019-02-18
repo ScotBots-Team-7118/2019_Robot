@@ -1,34 +1,32 @@
 package frc.robot;
 
-//imports
+// Imports for the Plunger Class
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Compressor;
 
 /**
- *  Controls plunger mechanism.
+ *  Framework for an object that controls the plunger mechanism.
  */
-public class Plunger{
-
-    // object declaration
+public class Plunger {
+    // Object declaration
     Solenoid upstreamSolenoid;
     Solenoid downstreamSolenoid;
     Solenoid piston;
     AnalogInput pressureSensor;
     AnalogInput vacuumSensor;
-    plungerState state;
     Timer timer;
     Compressor compressor;
-    
+    plungerState state;
 
-    //Solenoid channels
+    // Solenoid channels
     public static final int UPSTREAM_SOLENOID_CHANNEL = 0;
     public static final int DOWNSTREAM_SOLENOID_CHANNEL = 0;
     public static final int PISTON_SOLENOID_CHANNEL = 0;
     public static final int PRESSURE_SENSOR_CHANNEL = 0;
     public static final int VACUUM_SENSOR_CHANNEL = 0;
-    public static final int COMPRESSOR_CHANNEL = 0
+    public static final int COMPRESSOR_CHANNEL = 0;
 
     //Solenoid sensor variables
     public static final double VACUUM_SENSOR_GOOD_VAC = 30;
@@ -37,7 +35,7 @@ public class Plunger{
     /**
      * Constructs a new plunger object.
      */
-    public Plunger(){
+    public Plunger() {
     
         // object initialization
         upstreamSolenoid = new Solenoid(UPSTREAM_SOLENOID_CHANNEL);
@@ -51,16 +49,16 @@ public class Plunger{
     }
 
     /**
-     * convert pressure sensor volts to psi
+     * Converts the pressure sensor volts to psi.
      */
-    public double getPressure(){
+    public double getPressure() {
         return ((pressureSensor.getVoltage()*50.0)-25.0);
     }
 
     /**
-     * convert vacuum sensor volts to psi
+     * Converts the vacuum sensor volts to psi.
      */
-    public double getVacuum(){
+    public double getVacuum() {
         return ((vacuumSensor.getVoltage()*11.125)-20.0625);
     }
        
@@ -107,28 +105,23 @@ public class Plunger{
     }
     
     /**
-     * control pulse, pickup, and dropping game piece 
+     * Runs the plunger device by controlling pulse, pick-up, and drop-off of the hatch. 
      * @param buttonPress
      */
-    public void runPlunger(boolean buttonPress){
-
-
-       //state change requirements
+    public void runPlunger(boolean buttonPress) {
+       // State change requirements
         switch(state){
            //on button press, vacuum
             case CLOSED:
-            if(buttonPress)
-            {
+            if (buttonPress) {
                 state = plungerState.VACUUM_ON;
                 timer.reset();
             }
-           
             break;
 
             //on reaching psi, switch to hold
             case VACUUM_ON:
-            if(getVacuum() >= VACUUM_SENSOR_GOOD_VAC)
-            {
+            if (getVacuum() >= VACUUM_SENSOR_GOOD_VAC) {
                 state = plungerState.VACUUM_TO_HOLD;
                 timer.reset();    
             }
@@ -138,13 +131,11 @@ public class Plunger{
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
-            
             break;
 
             //after period of time, switch 
             case VACUUM_TO_HOLD:
-            if(timer.hasPeriodPassed(0.01))
-            {
+            if (timer.hasPeriodPassed(0.01)) {
                 state = plungerState.HOLD;
                 timer.reset();
             }
@@ -154,13 +145,11 @@ public class Plunger{
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
-
             break;
 
             //if low pressure, switch
             case HOLD:
-            if(getVacuum() <= VACUUM_SENSOR_MIN_VAC)
-            {
+            if (getVacuum() <= VACUUM_SENSOR_MIN_VAC) {
                 state = plungerState.HOLD_TO_VACUUM;
                 timer.reset();
             }
@@ -170,13 +159,11 @@ public class Plunger{
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
-
             break;
 
             //if time has passed, switch
             case HOLD_TO_VACUUM:
-            if(timer.hasPeriodPassed(0.01))
-            {
+            if (timer.hasPeriodPassed(0.01)) {
                 state = plungerState.VACUUM_ON;
                 timer.reset();
             }
@@ -186,17 +173,14 @@ public class Plunger{
                 state = plungerState.DROP_STATE;
                 timer.reset();
             }
-
             break;
 
             //release pressure on plunger, switch to closed state tod reset cycle
             case DROP_STATE:
-            if(timer.hasPeriodPassed(1))
-            {
+            if (timer.hasPeriodPassed(1)) {
                 state = plungerState.CLOSED;
                 timer.reset();
             }
-
             break;
 
         }
@@ -205,53 +189,36 @@ public class Plunger{
             
             //all solenoids closed
             case CLOSED:
-            
-            upstreamSolenoid.set(false);
-            downstreamSolenoid.set(false);
-
+            setSolenoids(false, false);
             break;
 
             //all solenoids open
             case VACUUM_ON:
-
-            upstreamSolenoid.set(true);
-            downstreamSolenoid.set(true);
-
+            setSolenoids(true, true);
             break;
 
             //close downstream solenoid to retain vacuum in suction cup
             case VACUUM_TO_HOLD:
-
-            upstreamSolenoid.set(true);
-            downstreamSolenoid.set(false);
-            
+            setSolenoids(true, false);
             break;
 
             //close upstream (downstream already closed), conserve air to refresh required
             case HOLD:
- 
-            upstreamSolenoid.set(false);
-            downstreamSolenoid.set(false);
-            
+            setSolenoids(false, false);
             break;
 
             //prepare to refresh vacuum, open upstream solenoid
             case HOLD_TO_VACUUM:
-
-            upstreamSolenoid.set(true);
-            downstreamSolenoid.set(false);
-            
+            setSolenoids(true, false);
             break;
 
             //close upstream, open downstream, release pressure through vac gen
             case DROP_STATE:
-
-            downstreamSolenoid.set(true);
-            upstreamSolenoid.set(false);
-            
+            setSolenoids(false, true);
             break;
         }
     }
+    
     
     /**
      * use button to operate piston
@@ -268,5 +235,15 @@ public class Plunger{
         
         // if button is realtime press, run line below by itself on button press (no bool input)
         // piston.set(!piston.get());
+    }
+
+    /**
+     * Sets the solenoids to the given values.
+     * @param upstream
+     * @param downstream
+     */
+    public void setSolenoids(boolean upstream, boolean downstream) {
+        upstreamSolenoid.set(upstream);
+        downstreamSolenoid.set(downstream);
     }
 }
