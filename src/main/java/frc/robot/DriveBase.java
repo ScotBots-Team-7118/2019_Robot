@@ -13,9 +13,10 @@ public class DriveBase {
     // Object declaraction
     private TalonSRX talLM, talLF, talRM, talRF, talC;
     // Constant inititalization
-    // Talon Port values  
-    // Order as follows: Right-Master, Right-Follower, Left-Master, Left-Follower, Center
-    private final int[] DRIVE_TALON_PORT = {7, 4, 5, 1, 6};
+    // Talon Port values
+    // Order as follows: Right-Master, Right-Follower, Left-Master, Left-Follower,
+    // Center
+    private final int[] DRIVE_TALON_PORT = { 7, 4, 5, 1, 6 };
 
     // Minimum joystick movement required for robot control
     private final double JOYSTICK_DEADZONE = 0.1;
@@ -44,7 +45,6 @@ public class DriveBase {
     // The encoder positions from the last time they were reset
     private double initEncLeft, initEncRight, initEncCenter;
 
-
     /**
      * Constructs a new DriveBase object.
      */
@@ -55,13 +55,13 @@ public class DriveBase {
         talRM = new TalonSRX(DRIVE_TALON_PORT[2]);
         talRF = new TalonSRX(DRIVE_TALON_PORT[3]);
         talC = new TalonSRX(DRIVE_TALON_PORT[4]);
-       
+
         // Pairs encoders with their respective Talons
         talLM.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
         talRM.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
         talC.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
-        // Gets encdoer value for future reference in getNormalizedPosition 
+        // Gets encdoer value for future reference in getNormalizedPosition
         initEncLeft = talLM.getSelectedSensorPosition(0);
         initEncRight = talRM.getSelectedSensorPosition(0);
         initEncCenter = talC.getSelectedSensorPosition(0);
@@ -69,14 +69,16 @@ public class DriveBase {
 
     /**
      * Gets the distance traveled by the left side of the robot.
+     * 
      * @return
      */
     public double getNormalizedPositionL() {
         return talLM.getSelectedSensorPosition(0) - initEncLeft;
     }
-        
+
     /**
      * Gets the distance traveled by the right side of the robot.
+     * 
      * @return
      */
     public double getNormalizedPositionR() {
@@ -85,12 +87,13 @@ public class DriveBase {
 
     /**
      * Gets the distance traveled by the center wheels of the robot.
+     * 
      * @return
      */
     public double getNormalizedPositionC() {
         return talC.getSelectedSensorPosition(0) - initEncCenter;
     }
-        
+
     /**
      * Resets the distance traveled by the encoders for the normalized positions.
      */
@@ -101,8 +104,9 @@ public class DriveBase {
     }
 
     /**
-     * Sets the left side of the robot to a given velocity,
-     * assuming it is within the accepted range of -1 < v < 1.
+     * Sets the left side of the robot to a given velocity, assuming it is within
+     * the accepted range of -1 < v < 1.
+     * 
      * @param v
      */
     public void setLeft(double v) {
@@ -128,8 +132,9 @@ public class DriveBase {
     }
 
     /**
-     * Sets the right side of the robot to a given velocity,
-     * assuming it is within the accepted range of -1 < v < 1.
+     * Sets the right side of the robot to a given velocity, assuming it is within
+     * the accepted range of -1 < v < 1.
+     * 
      * @param v
      */
     public void setRight(double v) {
@@ -155,8 +160,9 @@ public class DriveBase {
     }
 
     /**
-     * Sets the center wheels of the robot to a given velocity,
-     * assuming it is within the accepted range of -1 < v < 1.
+     * Sets the center wheels of the robot to a given velocity, assuming it is
+     * within the accepted range of -1 < v < 1.
+     * 
      * @param v
      */
     public void setCenter(double v) {
@@ -189,8 +195,9 @@ public class DriveBase {
     }
 
     /**
-     * Sets the neutral mode on the talons according to a boolean
-     * (true = brake mode, false = coast mode).
+     * Sets the neutral mode on the talons according to a boolean (true = brake
+     * mode, false = coast mode).
+     * 
      * @param brake
      */
     public void brakeMode(boolean brake) {
@@ -200,8 +207,7 @@ public class DriveBase {
             talRM.setNeutralMode(NeutralMode.Brake);
             talRF.setNeutralMode(NeutralMode.Brake);
             talC.setNeutralMode(NeutralMode.Brake);
-        }
-        else {
+        } else {
             talLM.setNeutralMode(NeutralMode.Coast);
             talLF.setNeutralMode(NeutralMode.Coast);
             talRM.setNeutralMode(NeutralMode.Coast);
@@ -212,6 +218,7 @@ public class DriveBase {
 
     /**
      * Formats the joystick axis values into an array for teleop drive.
+     * 
      * @param x
      * @param y
      * @param z
@@ -219,21 +226,21 @@ public class DriveBase {
      */
     public double[] formatDriveJoystick(double x, double y, double z) {
         // NOTE: Z-axis likely not needed, maybe should remove later
-        double[] joyArray = {x, y, z};
+        double[] joyArray = { x, y, z };
         return joyArray;
     }
 
     /**
-     * Drives the robot according to a single joystick
-     * with two axes of linear freedom (x and y).
+     * Drives the robot according to a single joystick with two axes of linear
+     * freedom (x and y).
+     * 
      * @param joyR
      * @param joyL
      */
-    public void teleopDrive(double[] joyR, double[] joyL) 
-    {
-        double[] spinReturn = {joyL[2], joyR[2],((joyR[1] + joyL[1])/2)};
+    public void teleopDrive(double[] joyR, double[] joyL) {
+        double[] spinReturn = { joyL[2], joyR[2], ((joyR[1] + joyL[1]) / 2) };
 
-        //input joy commands into drive methods w/ cubic function
+        // input joy commands into drive methods w/ cubic function
         setRight(Math.pow(spinReturn[0], 3));
         setLeft(Math.pow(spinReturn[1], 3));
         setCenter(Math.pow(spinReturn[2], 3));
@@ -241,13 +248,13 @@ public class DriveBase {
 
     /**
      * Enables or disables PID control using set values of kF, kP, kI, and kD.
+     * 
      * @param mode
      */
     public void pidControl(boolean mode) {
         if (mode) {
-            
-        }
-        else {
+
+        } else {
 
         }
     }

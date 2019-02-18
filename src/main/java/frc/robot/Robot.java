@@ -23,19 +23,19 @@ public class Robot extends TimedRobot {
   DriveBase driveBase;
   Gyroscope gyro;
   Joystick rawJoyR, rawJoyL;
-  //Pillow pillow;
+  // Pillow pillow;
   Plunger plunger;
 
   // Variable Declaration
   private final int JOY_R_PORT = 0;
   private final int JOY_L_PORT = 1;
-  private double[] joyR = {0, 0, 0}, joyL = {0, 0, 0};
+  private double[] joyR = { 0, 0, 0 }, joyL = { 0, 0, 0 };
   private final int SUCTION_BUTTON = 1;
   private final int PISTON_BUTTON = 2;
 
   /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
    */
   @Override
   public void robotInit() {
@@ -44,17 +44,18 @@ public class Robot extends TimedRobot {
     rawJoyL = new Joystick(JOY_L_PORT);
     gyro = new Gyroscope();
     driveBase = new DriveBase();
-    //pillow = new Pillow();
+    // pillow = new Pillow();
     plunger = new Plunger();
   }
 
   /**
-   * This function is called every robot packet, no matter the mode. Use
-   * this for items like diagnostics that you want ran during disabled,
-   * autonomous, teleoperated and test.
+   * This function is called every robot packet, no matter the mode. Use this for
+   * items like diagnostics that you want ran during disabled, autonomous,
+   * teleoperated and test.
    *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
+   * <p>
+   * This runs after the mode specific periodic functions, but before LiveWindow
+   * and SmartDashboard integrated updating.
    */
   @Override
   public void robotPeriodic() {
@@ -62,9 +63,9 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * Runs once when the robot becomes disabled.
-   * This is to ensure that the sensors are ready to go for the next mode
-   * and that the robot doesn't do anything unexpected while disabled.
+   * Runs once when the robot becomes disabled. This is to ensure that the sensors
+   * are ready to go for the next mode and that the robot doesn't do anything
+   * unexpected while disabled.
    */
   @Override
   public void disabledInit() {
@@ -84,7 +85,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    
+
   }
 
   /**
@@ -105,13 +106,15 @@ public class Robot extends TimedRobot {
     joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), rawJoyL.getRawAxis(1), rawJoyL.getRawAxis(2));
     // Use the formatted joystick data to drive the robot
     driveBase.teleopDrive(joyR, joyL);
-    // Run the plunger according to the state machine within the class and the given suction button
+    // Run the plunger according to the state machine within the class and the given
+    // suction button
     // if (pillow.closedState()) {
-    //   plunger.runPlunger(rawJoyR.getRawButton(SUCTION_BUTTON));
+    // plunger.runPlunger(rawJoyR.getRawButton(SUCTION_BUTTON));
     // }
     // else plunger.runPlunger(false);
-    
-    // Run the plunger according to the state machine within the class and the given suction button
+
+    // Run the plunger according to the state machine within the class and the given
+    // suction button
     plunger.plungerPiston(rawJoyR.getRawButtonPressed(PISTON_BUTTON));
   }
 
@@ -125,6 +128,6 @@ public class Robot extends TimedRobot {
     // driveBase.setCenter(rawJoyR.getRawAxis(0)*0.3);
     joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), rawJoyR.getRawAxis(1), rawJoyR.getRawAxis(2));
     joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), rawJoyL.getRawAxis(1), rawJoyL.getRawAxis(2));
-    driveBase.teleopDrive(joyR, joyL); 
+    driveBase.teleopDrive(joyR, joyL);
   }
 }
