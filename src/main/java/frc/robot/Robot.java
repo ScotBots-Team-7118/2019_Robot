@@ -15,9 +15,9 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.core.Point;
-import org.opencv.core.Size;
+// import org.opencv.imgproc.Imgproc;
+// import org.opencv.core.Point;
+// import org.opencv.core.Size;
 
 
 /**
@@ -63,27 +63,27 @@ public class Robot extends TimedRobot {
 
   }
 
-  public void runCamera(){
-    new Thread(() -> {
-      UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
-      camera.setResolution(640, 480);
+//   public void runCamera(){
+//     new Thread(() -> {
+//       UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
+//       camera.setResolution(640, 480);
       
-      CvSink cvSink = CameraServer.getInstance().getVideo();
-      CvSource outputStream = CameraServer.getInstance().putVideo("Output", 640, 480);
+//       CvSink cvSink = CameraServer.getInstance().getVideo();
+//       CvSource outputStream = CameraServer.getInstance().putVideo("Output", 640, 480);
       
-      Mat source = new Mat();
-      Mat output = new Mat();
+//       Mat source = new Mat();
+//       Mat output = new Mat();
       
-      while(!Thread.interrupted()) {
-          cvSink.grabFrame(source);
-        //  Imgproc.warpAffine(source, output, Imgproc.getRotationMatrix2D(new Point(320-1,240-1), 180, 1.0), new Size(640,480));
-          // output = source.mul();
-          // Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+//       while(!Thread.interrupted()) {
+//           cvSink.grabFrame(source);
+//         //  Imgproc.warpAffine(source, output, Imgproc.getRotationMatrix2D(new Point(320-1,240-1), 180, 1.0), new Size(640,480));
+//           // output = source.mul();
+//           // Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
 
-          outputStream.putFrame(source);
-      }
-  }).start();
-}
+//           outputStream.putFrame(source);
+//       }
+//   }).start();
+// }
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for
@@ -106,7 +106,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    plunger.plungerPiston(false);
+    plunger.runPiston(false);
   }
 
   /**
@@ -152,10 +152,10 @@ public class Robot extends TimedRobot {
 
     // Run the plunger according to the state machine within the class and the given
     // suction button
-    plunger.plungerPiston(rawJoyR.getRawButtonPressed(PISTON_BUTTON));
+    plunger.runPiston(rawJoyR.getRawButtonPressed(PISTON_BUTTON));
     plunger.runPlunger(rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
     plunger.runSolenoid();
-
+    plunger.runCompressor();
   }
 
   /**
