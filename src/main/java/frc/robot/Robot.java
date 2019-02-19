@@ -41,7 +41,8 @@ public class Robot extends TimedRobot {
   private double[] joyR = { 0, 0, 0 }, joyL = { 0, 0, 0 };
   private final int SUCTION_BUTTON = 1;
   private final int PISTON_BUTTON = 2;
-  private final int PILLOW_BUTTON = 3;
+  private final int PILLOW_BUTTON_OPEN = 3;
+  private final int PILLOW_BUTTON_CLOSED = 4;
 
   
   /**
@@ -58,7 +59,7 @@ public class Robot extends TimedRobot {
     pillow = new Pillow();
     plunger = new Plunger();
     CameraServer.getInstance().startAutomaticCapture(0);
-    // CameraServer.getInstance().startAutomaticCapture(1);
+    CameraServer.getInstance().startAutomaticCapture(1);
     // runCamera();
 
   }
@@ -146,7 +147,7 @@ public class Robot extends TimedRobot {
     driveBase.teleopDrive(joyR, joyL);
     // Run the plunger according to the state machine within the class and the given
     // suction button
-    pillow.runPillow(rawJoyR.getRawButton(3), rawJoyR.getRawButton(4));
+    pillow.runPillow(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
 
     // Run the plunger according to the state machine within the class and the given
     // suction button
@@ -167,15 +168,5 @@ public class Robot extends TimedRobot {
     joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), -rawJoyR.getRawAxis(1));
     joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
     driveBase.teleopDrive(joyR, joyL);
-
-    if (rawJoyR.getRawButton(PILLOW_BUTTON)) {
-      pillow.test(1);
-    }
-    else if (rawJoyR.getRawButton(4)){
-      pillow.test(-1);
-    }
-    else{
-      pillow.test(0);   
-     }
   }
 }
