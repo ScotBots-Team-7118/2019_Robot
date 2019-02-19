@@ -115,9 +115,10 @@ public class Robot extends TimedRobot {
 
     // Run the plunger according to the state machine within the class and the given
     // suction button
-    plunger.plungerPiston(rawJoyR.getRawButtonPressed(PISTON_BUTTON));
+    plunger.runPiston(rawJoyR.getRawButtonPressed(PISTON_BUTTON));
     plunger.runPlunger(rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
     plunger.runSolenoid();
+    plunger.runCompressor();
   }
 
   /**
