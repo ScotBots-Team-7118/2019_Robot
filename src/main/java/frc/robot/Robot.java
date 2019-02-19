@@ -167,15 +167,5 @@ public class Robot extends TimedRobot {
     joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), -rawJoyR.getRawAxis(1));
     joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
     driveBase.teleopDrive(joyR, joyL);
-
-    if (rawJoyR.getRawButton(PILLOW_BUTTON)) {
-      pillow.test(1);
-    }
-    else if (rawJoyR.getRawButton(4)){
-      pillow.test(-1);
-    }
-    else{
-      pillow.test(0);   
-     }
   }
 }
