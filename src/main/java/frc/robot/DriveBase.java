@@ -14,9 +14,11 @@ public class DriveBase {
     private TalonSRX talLM, talLF, talRM, talRF, talC;
     // Constant inititalization
     // Talon Port values
-    // Order as follows: Right-Master, Right-Follower, Left-Master, Left-Follower,
-    // Center
-    private final int[] DRIVE_TALON_PORT = { 7, 4, 5, 1, 6 };
+    private final int RIGHT_MASTER_PORT = 7;
+    private final int RIGHT_FOLLOWER_PORT = 4;
+    private final int LEFT_MASTER_PORT = 5;
+    private final int LEFT_FOLLWER_PORT = 1;
+    private final int CENTER_PORT = 6;
 
     // Minimum joystick movement required for robot control
     private final double JOYSTICK_DEADZONE = 0.1;
@@ -50,11 +52,11 @@ public class DriveBase {
      */
     public DriveBase() {
         // Drive Talon Initialization
-        talLM = new TalonSRX(DRIVE_TALON_PORT[0]);
-        talLF = new TalonSRX(DRIVE_TALON_PORT[1]);
-        talRM = new TalonSRX(DRIVE_TALON_PORT[2]);
-        talRF = new TalonSRX(DRIVE_TALON_PORT[3]);
-        talC = new TalonSRX(DRIVE_TALON_PORT[4]);
+        talLM = new TalonSRX(LEFT_MASTER_PORT);
+        talLF = new TalonSRX(LEFT_FOLLWER_PORT);
+        talRM = new TalonSRX(RIGHT_MASTER_PORT);
+        talRF = new TalonSRX(RIGHT_FOLLOWER_PORT);
+        talC = new TalonSRX(CENTER_PORT);
 
         // Pairs encoders with their respective Talons
         talLM.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
@@ -128,7 +130,7 @@ public class DriveBase {
 
         // Set the left-side talons to the new adjusted velocity
         talLM.set(ControlMode.PercentOutput, v);
-        talLF.set(ControlMode.Follower, DRIVE_TALON_PORT[0]);
+        talLF.set(ControlMode.Follower, LEFT_MASTER_PORT);
     }
 
     /**
@@ -156,7 +158,7 @@ public class DriveBase {
 
         // Set the right-side talons to the new adjusted velocity
         talRM.set(ControlMode.PercentOutput, v);
-        talRF.set(ControlMode.Follower, DRIVE_TALON_PORT[2]);
+        talRF.set(ControlMode.Follower, RIGHT_MASTER_PORT);
     }
 
     /**
@@ -221,12 +223,11 @@ public class DriveBase {
      * 
      * @param x
      * @param y
-     * @param z
-     * @return A formatted double array (x-axis, y-axis, z-axis).
+     * @return A formatted double array (x-axis, y-axis).
      */
-    public double[] formatDriveJoystick(double x, double y, double z) {
+    public double[] formatDriveJoystick(double x, double y) {
         // NOTE: Z-axis likely not needed, maybe should remove later
-        double[] joyArray = { x, y, z };
+        double[] joyArray = { x, y};
         return joyArray;
     }
 
@@ -238,15 +239,16 @@ public class DriveBase {
      * @param joyL
      */
     public void teleopDrive(double[] joyR, double[] joyL) {
-        double[] spinReturn = { joyL[2], joyR[2], ((joyR[1] + joyL[1]) / 2) };
+        double[] spinReturn = { joyL[1], joyR[1], ((joyR[0] + joyL[0]) / 2) };
 
         // input joy commands into drive methods w/ cubic function
-        setRight(Math.pow(spinReturn[0], 3));
-        setLeft(Math.pow(spinReturn[1], 3));
+        setLeft(Math.pow(spinReturn[0], 3));
+        setRight(Math.pow(spinReturn[1], 3));
         setCenter(Math.pow(spinReturn[2], 3));
     }
 
     /**
+     * 
      * Enables or disables PID control using set values of kF, kP, kI, and kD.
      * 
      * @param mode

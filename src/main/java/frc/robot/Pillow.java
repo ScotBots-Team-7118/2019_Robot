@@ -35,7 +35,11 @@ public class Pillow {
         // Object initialization
         talOpen = new TalonSRX(PILLOW_TALON_PORT);
         limOpen = new DigitalInput(0);
-        limClosed = new DigitalInput(0);
+        limClosed = new DigitalInput(1);
+    }
+
+    public void test(int direction) {
+        talOpen.set(ControlMode.PercentOutput, direction*0.5);
     }
 
     /**
