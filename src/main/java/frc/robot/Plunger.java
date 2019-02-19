@@ -109,11 +109,11 @@ public class Plunger {
         iteration++;
         if (iteration%20 == 0)
         {
-        
             SmartDashboard.putNumber("VacuumVoltage: ", vacuumSensor.getVoltage());
             SmartDashboard.putNumber("VacuumPSI", getVacuum());
             SmartDashboard.putNumber("PressureVoltage", pressureSensor.getVoltage());
             SmartDashboard.putNumber("PressurePSI", getPressure());
+            SmartDashboard.putNumber("Pressure Until Next Cycle", getVacuum()-VACUUM_SENSOR_MIN_VAC);
         }
     }
     /**
