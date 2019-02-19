@@ -11,10 +11,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.cameraserver.*;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
-import org.opencv.core.Mat;
+// import edu.wpi.cscore.UsbCamera;
+// import edu.wpi.cscore.CvSink;
+// import edu.wpi.cscore.CvSource;
+// import org.opencv.core.Mat;
 // import org.opencv.imgproc.Imgproc;
 // import org.opencv.core.Point;
 // import org.opencv.core.Size;
@@ -97,6 +97,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     plunger.plungertest();
+
   }
 
   /**
@@ -145,10 +146,7 @@ public class Robot extends TimedRobot {
     driveBase.teleopDrive(joyR, joyL);
     // Run the plunger according to the state machine within the class and the given
     // suction button
-     if (pillow.closedState()) {
-    plunger.runPlunger(rawJoyR.getRawButton(PILLOW_BUTTON));
-    }
-    else plunger.runPlunger(false);
+    pillow.runPillow(rawJoyR.getRawButton(3), rawJoyR.getRawButton(4));
 
     // Run the plunger according to the state machine within the class and the given
     // suction button

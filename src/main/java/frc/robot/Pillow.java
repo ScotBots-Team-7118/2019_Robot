@@ -3,6 +3,8 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 /**
@@ -20,6 +22,9 @@ public class Pillow {
     private final int STOP = 0;
     private final int FORWARDS = 1;
     private final int BACKWARDS = -1;
+    //pillow test variables
+    private static int iteration = 0;
+    private String stateTest ="DefaultValue"; 
 
     // States for the runPillow() function
     public enum PillowStates {
@@ -38,8 +43,17 @@ public class Pillow {
         limClosed = new DigitalInput(1);
     }
 
-    public void test(int direction) {
-        talOpen.set(ControlMode.PercentOutput, direction*0.5);
+    /**
+     * Sends pillow values to dashboard
+     */
+    public void pillowTest() {
+        iteration++;
+        if((iteration%20) == 0)
+        {
+            SmartDashboard.putBoolean("Open", isOpen());
+            SmartDashboard.putBoolean("Closed", isClosed());
+            SmartDashboard.putString("State", stateTest);
+        }
     }
 
     /**
@@ -90,6 +104,7 @@ public class Pillow {
         switch (state) {
         // State representing a closed and immobile Pillow door
         case CLOSED:
+            stateTest = "Closed";
             // If the appropriate button is pressed, begin opening the pillow door
             if (openingButton) {
                 state = PillowStates.OPENING;
@@ -101,6 +116,7 @@ public class Pillow {
 
         // State representing a Pillow door in the process of opening up
         case OPENING:
+            stateTest = "Opening";
             // If the appropriate button is pressed and the door isn't open, set the motor
             // to open the door
             if (openingButton && !isOpen()) {
@@ -122,6 +138,7 @@ public class Pillow {
 
         // State representing an open and immobile Pillow door
         case OPEN:
+            stateTest = "Open";
             // If the closing button is pressed, begin to close the Pillow door
             if (closingButton) {
                 state = PillowStates.CLOSING;
@@ -134,6 +151,7 @@ public class Pillow {
 
         // State representing a Pillow door in the process of closing
         case CLOSING:
+            stateTest = "Closing";
             // If the appropriate button is pressed and the door isn't closed,
             // set the motors to close the Pillow door
             if (closingButton && !isClosed()) {
