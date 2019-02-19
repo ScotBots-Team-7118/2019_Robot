@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Framework for an object that controls the plunger mechanism.
@@ -21,14 +22,16 @@ public class Plunger {
     plungerState state;
 
     // Solenoid channels
-    public static final int UPSTREAM_SOLENOID_CHANNEL = 1;
-    public static final int DOWNSTREAM_SOLENOID_CHANNEL = 2;
-    public static final int PRESSURE_SENSOR_CHANNEL = 3;
-    public static final int VACUUM_SENSOR_CHANNEL = 4;
+    public static final int UPSTREAM_SOLENOID_CHANNEL = 2;
+    public static final int DOWNSTREAM_SOLENOID_CHANNEL = 1;
+    public static final int PRESSURE_SENSOR_CHANNEL = 2;
+    public static final int VACUUM_SENSOR_CHANNEL = 3;
     public static final int PISTON_SOLENOID_CHANNEL = 0;
     // Solenoid sensor variables
-    public static final double VACUUM_SENSOR_IDEAL_VAC = 30;
-    public static final double VACUUM_SENSOR_MIN_VAC = 20;
+    public static final double VACUUM_SENSOR_IDEAL_VAC = -4;
+    public static final double VACUUM_SENSOR_MIN_VAC = -3;
+    //plunger test variables
+    public int iteration = 0;
 
     /**
      * Constructs a new plunger object.
@@ -44,6 +47,7 @@ public class Plunger {
         compressor = new Compressor();
         timer = new Timer();
         timer.start();
+        state = plungerState.CLOSED;
     }
 
     /**
@@ -57,18 +61,14 @@ public class Plunger {
      * Converts the vacuum sensor volts to psi.
      */
     public double getVacuum() {
-        return ((vacuumSensor.getVoltage() * 11.125) - 20.0625);
+        return ((vacuumSensor.getVoltage()* 11.125) - 20.0625);
     }
 
     /**
      * runs compressor if below max pressure (120 psi)
      */
     public void compressor() {
-        if (120 > getPressure()) {
-            compressor.start();
-        } else {
-            compressor.stop();
-        }
+        compressor.start();
     }
 
     /**
@@ -97,17 +97,22 @@ public class Plunger {
      */
     public void plungerPiston(boolean pistonButton) {
         // on button press, change solenoid (if bool input is based on last press)
-        if (pistonButton) {
-            piston.set(true);
-        } else {
-            piston.set(false);
+        if( pistonButton)
+        {
+        piston.set(!piston.get());
         }
-
-        // if button is realtime press, run line below by itself on button press (no
-        // bool input)
-        // piston.set(!piston.get());
     }
-
+    public void plungertest(){
+        iteration++;
+        if (iteration%20 == 0)
+        {
+        
+            SmartDashboard.putNumber("VacuumVoltage: ", vacuumSensor.getVoltage());
+            SmartDashboard.putNumber("VacuumPSI", getVacuum());
+            SmartDashboard.putNumber("PressureVoltage", pressureSensor.getVoltage());
+            SmartDashboard.putNumber("PressurePSI", getPressure());
+        }
+    }
     /**
      * Sets the solenoids to the given values.
      * 
@@ -150,7 +155,7 @@ public class Plunger {
                 // if button press, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
-            } else if (getVacuum() >= VACUUM_SENSOR_IDEAL_VAC) {
+            } else if (getVacuum() <= VACUUM_SENSOR_IDEAL_VAC) {
                 state = plungerState.VACUUM_TO_HOLD;
                 timer.reset();
             }
@@ -175,7 +180,7 @@ public class Plunger {
                 // if buttonpress, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
-            } else if (getVacuum() <= VACUUM_SENSOR_MIN_VAC) {
+            } else if (getVacuum() >= VACUUM_SENSOR_MIN_VAC) {
                 state = plungerState.HOLD_TO_VACUUM;
                 timer.reset();
             }
