@@ -114,6 +114,19 @@ public class Plunger {
             SmartDashboard.putNumber("PressureVoltage", pressureSensor.getVoltage());
             SmartDashboard.putNumber("PressurePSI", getPressure());
             SmartDashboard.putNumber("Pressure Until Next Cycle", getVacuum()-VACUUM_SENSOR_MIN_VAC);
+            SmartDashboard.putString("Piston", isPiston());
+        }
+    }
+
+    /**
+     * returns if piston is extended
+     * @return
+     */
+    public String isPiston(){
+        if (piston.get()){
+            return "Extended";
+        }else{
+            return "Retracted";
         }
     }
     /**

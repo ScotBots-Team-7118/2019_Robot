@@ -98,6 +98,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     plunger.plungertest();
+    pillow.pillowTest();
 
   }
 
@@ -147,11 +148,11 @@ public class Robot extends TimedRobot {
     driveBase.teleopDrive(joyR, joyL);
     // Run the plunger according to the state machine within the class and the given
     // suction button
-    pillow.runPillow(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
-
+    pillow.runPillow(rawJoyR.getRawButtonPressed(PILLOW_BUTTON_OPEN), rawJoyR.getRawButtonPressed(PILLOW_BUTTON_CLOSED));
+    //pillow.test(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
     // Run the plunger according to the state machine within the class and the given
     // suction button
-    plunger.runPiston(rawJoyR.getRawButtonPressed(PISTON_BUTTON));
+    plunger.runPiston(rawJoyR.getRawButton(PISTON_BUTTON));
     plunger.runPlunger(rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
     plunger.runSolenoid();
     plunger.runCompressor();

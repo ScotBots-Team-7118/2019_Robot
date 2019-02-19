@@ -18,7 +18,7 @@ public class Pillow {
 
     // Variable initialization
     private final int PILLOW_TALON_PORT = 3;
-    private final double PILLOW_TALON_SPEED = 0.3;
+    private final double PILLOW_TALON_SPEED = 0.5;
     private final int STOP = 0;
     private final int FORWARDS = 1;
     private final int BACKWARDS = -1;
@@ -39,8 +39,9 @@ public class Pillow {
     public Pillow() {
         // Object initialization
         talOpen = new TalonSRX(PILLOW_TALON_PORT);
-        limOpen = new DigitalInput(0);
+        limOpen = new DigitalInput(2);
         limClosed = new DigitalInput(1);
+        state = PillowStates.CLOSED;
     }
 
     /**
@@ -53,6 +54,7 @@ public class Pillow {
             SmartDashboard.putBoolean("Open", isOpen());
             SmartDashboard.putBoolean("Closed", isClosed());
             SmartDashboard.putString("State", stateTest);
+            System.out.println(limOpen.get() + "\t" + limClosed.get());    
         }
     }
 
@@ -94,6 +96,16 @@ public class Pillow {
         }
     }
 
+    public void test(boolean buttonO, boolean buttonC){
+        if (buttonC){
+            run(FORWARDS);
+        }else if (buttonO){
+            run(BACKWARDS);
+        }else{
+            run(STOP);
+        }
+    }
+
     /**
      * Runs the Pillow based various states of the mechanical device.
      * 
@@ -119,7 +131,7 @@ public class Pillow {
             stateTest = "Opening";
             // If the appropriate button is pressed and the door isn't open, set the motor
             // to open the door
-            if (openingButton && !isOpen()) {
+            if (openingButton && isOpen()) {
                 run(FORWARDS);
             }
             // Otherwise, if the closing button is pressed, stop opening the door
@@ -154,7 +166,7 @@ public class Pillow {
             stateTest = "Closing";
             // If the appropriate button is pressed and the door isn't closed,
             // set the motors to close the Pillow door
-            if (closingButton && !isClosed()) {
+            if (closingButton /*&& !isClosed()*/) {
                 run(BACKWARDS);
             }
             // Otherwise, if the opening button is pressed, stop closing the door
