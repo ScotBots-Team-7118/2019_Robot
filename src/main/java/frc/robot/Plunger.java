@@ -30,10 +30,10 @@ public class Plunger {
     // Solenoid sensor variables
     public static final double VACUUM_SENSOR_IDEAL_VAC = -4;
     public static final double VACUUM_SENSOR_MIN_VAC = -3;
-    //Timer variables
+    // Timer variables
     public static final double WAIT_TIME = 0.01;
     public static final double DROP_TIME = 1;
-    //plunger test variables
+    // plunger test variables
     public int iteration = 0;
 
     /**
@@ -64,7 +64,7 @@ public class Plunger {
      * Converts the vacuum sensor volts to psi using a predetirmined function.
      */
     public double getVacuum() {
-        return ((vacuumSensor.getVoltage()* 11.125) - 20.0625);
+        return ((vacuumSensor.getVoltage() * 11.125) - 20.0625);
     }
 
     /**
@@ -100,35 +100,38 @@ public class Plunger {
      */
     public void runPiston(boolean pistonButton) {
         // on button press, change solenoid (if bool input is based on last press)
-        if( pistonButton)
-        {
-        piston.set(!piston.get());
+        if (pistonButton) {
+            piston.set(!piston.get());
         }
     }
-    public void plungertest(){
+
+    public void plungertest() {
         iteration++;
-        if (iteration%20 == 0)
-        {
+        if (iteration % 20 == 0) {
             SmartDashboard.putNumber("VacuumVoltage: ", vacuumSensor.getVoltage());
             SmartDashboard.putNumber("VacuumPSI", getVacuum());
             SmartDashboard.putNumber("PressureVoltage", pressureSensor.getVoltage());
             SmartDashboard.putNumber("PressurePSI", getPressure());
-            SmartDashboard.putNumber("Pressure Until Next Cycle", getVacuum()-VACUUM_SENSOR_MIN_VAC);
+            SmartDashboard.putNumber("Pressure Until Next Cycle", getVacuum() - VACUUM_SENSOR_MIN_VAC);
             SmartDashboard.putString("Piston", isPiston());
+            SmartDashboard.putBoolean("Upstream Solenoid", upstreamSolenoid.get());
+            SmartDashboard.putBoolean("Downstream Solenoid", downstreamSolenoid.get());
         }
     }
 
     /**
      * returns if piston is extended
+     * 
      * @return
      */
-    public String isPiston(){
-        if (piston.get()){
+    public String isPiston() {
+        if (piston.get()) {
             return "Extended";
-        }else{
+        } else {
             return "Retracted";
         }
     }
+
     /**
      * Sets the solenoids to the given values.
      * 
@@ -159,8 +162,7 @@ public class Plunger {
         switch (state) {
         case CLOSED:
             // on button press, switch to vacuum on
-            if (buttonPress)
-            {
+            if (buttonPress) {
                 state = plungerState.VACUUM_ON;
             }
             // Otherwise, maintain the current state
@@ -168,8 +170,7 @@ public class Plunger {
 
         case VACUUM_ON:
             // on 30 psi, switch to hold
-            if (buttonPress)
-            {
+            if (buttonPress) {
                 // if button press, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
@@ -179,26 +180,22 @@ public class Plunger {
             }
             // Otherwise, maintain the current state
             break;
-            
+
         case VACUUM_TO_HOLD:
             // after 0.01 sec, switch to hold
-            if (buttonPress) 
-            {
+            if (buttonPress) {
                 // if buttonpress, switch to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
-            } else if (timer.hasPeriodPassed(WAIT_TIME)) 
-            {
+            } else if (timer.hasPeriodPassed(WAIT_TIME)) {
                 state = plungerState.HOLD;
             }
             // Otherwise, maintain the current state
             break;
 
-        
         case HOLD:
             // if low pressure( below 20 psi), switch to hold to vacuum
-            if (buttonPress) 
-            {
+            if (buttonPress) {
                 // if buttonpress, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
@@ -208,26 +205,26 @@ public class Plunger {
             }
             // Otherwise, maintain the current state
             break;
-       
+
         case HOLD_TO_VACUUM:
-             // after 0.01 sec, switch to vacuum on
+            // after 0.01 sec, switch to vacuum on
             if (buttonPress) {
                 // if button press, go to drop state
                 state = plungerState.DROP_STATE;
                 timer.reset();
-            } else if (timer.hasPeriodPassed(WAIT_TIME)) 
-            {
+            } else if (timer.hasPeriodPassed(WAIT_TIME)) {
                 state = plungerState.VACUUM_ON;
                 timer.reset();
             }
             // Otherwise, maintain the current state
             break;
 
-        // release pressure on plunger, switch to closed state after 1 sec to reset cycle
+        // release pressure on plunger, switch to closed state after 1 sec to reset
+        // cycle
         case DROP_STATE:
-            // release pressure on plunger, switch to closed state after 1 sec to reset cycle
-            if (timer.hasPeriodPassed(DROP_TIME)) 
-            {
+            // release pressure on plunger, switch to closed state after 1 sec to reset
+            // cycle
+            if (timer.hasPeriodPassed(DROP_TIME)) {
                 state = plungerState.CLOSED;
                 timer.reset();
             }

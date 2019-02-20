@@ -98,44 +98,41 @@ public class BNO055 {
 		BNO055_PAGE_ID_ADDR(0X07),
 
 		/* PAGE0 REGISTER DEFINITION START */
-		BNO055_CHIP_ID_ADDR(0x00), BNO055_ACCEL_REV_ID_ADDR(0x01), BNO055_MAG_REV_ID_ADDR(
-				0x02), BNO055_GYRO_REV_ID_ADDR(0x03), BNO055_SW_REV_ID_LSB_ADDR(
-						0x04), BNO055_SW_REV_ID_MSB_ADDR(0x05), BNO055_BL_REV_ID_ADDR(0X06),
+		BNO055_CHIP_ID_ADDR(0x00), BNO055_ACCEL_REV_ID_ADDR(0x01), BNO055_MAG_REV_ID_ADDR(0x02),
+		BNO055_GYRO_REV_ID_ADDR(0x03), BNO055_SW_REV_ID_LSB_ADDR(0x04), BNO055_SW_REV_ID_MSB_ADDR(0x05),
+		BNO055_BL_REV_ID_ADDR(0X06),
 
 		/* Accel data register */
-		BNO055_ACCEL_DATA_X_LSB_ADDR(0X08), BNO055_ACCEL_DATA_X_MSB_ADDR(0X09), BNO055_ACCEL_DATA_Y_LSB_ADDR(
-				0X0A), BNO055_ACCEL_DATA_Y_MSB_ADDR(
-						0X0B), BNO055_ACCEL_DATA_Z_LSB_ADDR(0X0C), BNO055_ACCEL_DATA_Z_MSB_ADDR(0X0D),
+		BNO055_ACCEL_DATA_X_LSB_ADDR(0X08), BNO055_ACCEL_DATA_X_MSB_ADDR(0X09), BNO055_ACCEL_DATA_Y_LSB_ADDR(0X0A),
+		BNO055_ACCEL_DATA_Y_MSB_ADDR(0X0B), BNO055_ACCEL_DATA_Z_LSB_ADDR(0X0C), BNO055_ACCEL_DATA_Z_MSB_ADDR(0X0D),
 
 		/* Mag data register */
-		BNO055_MAG_DATA_X_LSB_ADDR(0X0E), BNO055_MAG_DATA_X_MSB_ADDR(0X0F), BNO055_MAG_DATA_Y_LSB_ADDR(
-				0X10), BNO055_MAG_DATA_Y_MSB_ADDR(
-						0X11), BNO055_MAG_DATA_Z_LSB_ADDR(0X12), BNO055_MAG_DATA_Z_MSB_ADDR(0X13),
+		BNO055_MAG_DATA_X_LSB_ADDR(0X0E), BNO055_MAG_DATA_X_MSB_ADDR(0X0F), BNO055_MAG_DATA_Y_LSB_ADDR(0X10),
+		BNO055_MAG_DATA_Y_MSB_ADDR(0X11), BNO055_MAG_DATA_Z_LSB_ADDR(0X12), BNO055_MAG_DATA_Z_MSB_ADDR(0X13),
 
 		/* Gyro data registers */
-		BNO055_GYRO_DATA_X_LSB_ADDR(0X14), BNO055_GYRO_DATA_X_MSB_ADDR(0X15), BNO055_GYRO_DATA_Y_LSB_ADDR(
-				0X16), BNO055_GYRO_DATA_Y_MSB_ADDR(
-						0X17), BNO055_GYRO_DATA_Z_LSB_ADDR(0X18), BNO055_GYRO_DATA_Z_MSB_ADDR(0X19),
+		BNO055_GYRO_DATA_X_LSB_ADDR(0X14), BNO055_GYRO_DATA_X_MSB_ADDR(0X15), BNO055_GYRO_DATA_Y_LSB_ADDR(0X16),
+		BNO055_GYRO_DATA_Y_MSB_ADDR(0X17), BNO055_GYRO_DATA_Z_LSB_ADDR(0X18), BNO055_GYRO_DATA_Z_MSB_ADDR(0X19),
 
 		/* Euler data registers */
-		BNO055_EULER_H_LSB_ADDR(0X1A), BNO055_EULER_H_MSB_ADDR(0X1B), BNO055_EULER_R_LSB_ADDR(
-				0X1C), BNO055_EULER_R_MSB_ADDR(0X1D), BNO055_EULER_P_LSB_ADDR(0X1E), BNO055_EULER_P_MSB_ADDR(0X1F),
+		BNO055_EULER_H_LSB_ADDR(0X1A), BNO055_EULER_H_MSB_ADDR(0X1B), BNO055_EULER_R_LSB_ADDR(0X1C),
+		BNO055_EULER_R_MSB_ADDR(0X1D), BNO055_EULER_P_LSB_ADDR(0X1E), BNO055_EULER_P_MSB_ADDR(0X1F),
 
 		/* Quaternion data registers */
-		BNO055_QUATERNION_DATA_W_LSB_ADDR(0X20), BNO055_QUATERNION_DATA_W_MSB_ADDR(
-				0X21), BNO055_QUATERNION_DATA_X_LSB_ADDR(0X22), BNO055_QUATERNION_DATA_X_MSB_ADDR(
-						0X23), BNO055_QUATERNION_DATA_Y_LSB_ADDR(0X24), BNO055_QUATERNION_DATA_Y_MSB_ADDR(
-								0X25), BNO055_QUATERNION_DATA_Z_LSB_ADDR(0X26), BNO055_QUATERNION_DATA_Z_MSB_ADDR(0X27),
+		BNO055_QUATERNION_DATA_W_LSB_ADDR(0X20), BNO055_QUATERNION_DATA_W_MSB_ADDR(0X21),
+		BNO055_QUATERNION_DATA_X_LSB_ADDR(0X22), BNO055_QUATERNION_DATA_X_MSB_ADDR(0X23),
+		BNO055_QUATERNION_DATA_Y_LSB_ADDR(0X24), BNO055_QUATERNION_DATA_Y_MSB_ADDR(0X25),
+		BNO055_QUATERNION_DATA_Z_LSB_ADDR(0X26), BNO055_QUATERNION_DATA_Z_MSB_ADDR(0X27),
 
 		/* Linear acceleration data registers */
-		BNO055_LINEAR_ACCEL_DATA_X_LSB_ADDR(0X28), BNO055_LINEAR_ACCEL_DATA_X_MSB_ADDR(
-				0X29), BNO055_LINEAR_ACCEL_DATA_Y_LSB_ADDR(0X2A), BNO055_LINEAR_ACCEL_DATA_Y_MSB_ADDR(
-						0X2B), BNO055_LINEAR_ACCEL_DATA_Z_LSB_ADDR(0X2C), BNO055_LINEAR_ACCEL_DATA_Z_MSB_ADDR(0X2D),
+		BNO055_LINEAR_ACCEL_DATA_X_LSB_ADDR(0X28), BNO055_LINEAR_ACCEL_DATA_X_MSB_ADDR(0X29),
+		BNO055_LINEAR_ACCEL_DATA_Y_LSB_ADDR(0X2A), BNO055_LINEAR_ACCEL_DATA_Y_MSB_ADDR(0X2B),
+		BNO055_LINEAR_ACCEL_DATA_Z_LSB_ADDR(0X2C), BNO055_LINEAR_ACCEL_DATA_Z_MSB_ADDR(0X2D),
 
 		/* Gravity data registers */
-		BNO055_GRAVITY_DATA_X_LSB_ADDR(0X2E), BNO055_GRAVITY_DATA_X_MSB_ADDR(0X2F), BNO055_GRAVITY_DATA_Y_LSB_ADDR(
-				0X30), BNO055_GRAVITY_DATA_Y_MSB_ADDR(
-						0X31), BNO055_GRAVITY_DATA_Z_LSB_ADDR(0X32), BNO055_GRAVITY_DATA_Z_MSB_ADDR(0X33),
+		BNO055_GRAVITY_DATA_X_LSB_ADDR(0X2E), BNO055_GRAVITY_DATA_X_MSB_ADDR(0X2F),
+		BNO055_GRAVITY_DATA_Y_LSB_ADDR(0X30), BNO055_GRAVITY_DATA_Y_MSB_ADDR(0X31),
+		BNO055_GRAVITY_DATA_Z_LSB_ADDR(0X32), BNO055_GRAVITY_DATA_Z_MSB_ADDR(0X33),
 
 		/* Temperature data register */
 		BNO055_TEMP_ADDR(0X34),
@@ -157,30 +154,24 @@ public class BNO055 {
 		BNO055_AXIS_MAP_CONFIG_ADDR(0X41), BNO055_AXIS_MAP_SIGN_ADDR(0X42),
 
 		/* SIC registers */
-		BNO055_SIC_MATRIX_0_LSB_ADDR(0X43), BNO055_SIC_MATRIX_0_MSB_ADDR(0X44), BNO055_SIC_MATRIX_1_LSB_ADDR(
-				0X45), BNO055_SIC_MATRIX_1_MSB_ADDR(0X46), BNO055_SIC_MATRIX_2_LSB_ADDR(
-						0X47), BNO055_SIC_MATRIX_2_MSB_ADDR(0X48), BNO055_SIC_MATRIX_3_LSB_ADDR(
-								0X49), BNO055_SIC_MATRIX_3_MSB_ADDR(0X4A), BNO055_SIC_MATRIX_4_LSB_ADDR(
-										0X4B), BNO055_SIC_MATRIX_4_MSB_ADDR(0X4C), BNO055_SIC_MATRIX_5_LSB_ADDR(
-												0X4D), BNO055_SIC_MATRIX_5_MSB_ADDR(0X4E), BNO055_SIC_MATRIX_6_LSB_ADDR(
-														0X4F), BNO055_SIC_MATRIX_6_MSB_ADDR(
-																0X50), BNO055_SIC_MATRIX_7_LSB_ADDR(
-																		0X51), BNO055_SIC_MATRIX_7_MSB_ADDR(
-																				0X52), BNO055_SIC_MATRIX_8_LSB_ADDR(
-																						0X53), BNO055_SIC_MATRIX_8_MSB_ADDR(
-																								0X54),
+		BNO055_SIC_MATRIX_0_LSB_ADDR(0X43), BNO055_SIC_MATRIX_0_MSB_ADDR(0X44), BNO055_SIC_MATRIX_1_LSB_ADDR(0X45),
+		BNO055_SIC_MATRIX_1_MSB_ADDR(0X46), BNO055_SIC_MATRIX_2_LSB_ADDR(0X47), BNO055_SIC_MATRIX_2_MSB_ADDR(0X48),
+		BNO055_SIC_MATRIX_3_LSB_ADDR(0X49), BNO055_SIC_MATRIX_3_MSB_ADDR(0X4A), BNO055_SIC_MATRIX_4_LSB_ADDR(0X4B),
+		BNO055_SIC_MATRIX_4_MSB_ADDR(0X4C), BNO055_SIC_MATRIX_5_LSB_ADDR(0X4D), BNO055_SIC_MATRIX_5_MSB_ADDR(0X4E),
+		BNO055_SIC_MATRIX_6_LSB_ADDR(0X4F), BNO055_SIC_MATRIX_6_MSB_ADDR(0X50), BNO055_SIC_MATRIX_7_LSB_ADDR(0X51),
+		BNO055_SIC_MATRIX_7_MSB_ADDR(0X52), BNO055_SIC_MATRIX_8_LSB_ADDR(0X53), BNO055_SIC_MATRIX_8_MSB_ADDR(0X54),
 
 		/* Accelerometer Offset registers */
-		ACCEL_OFFSET_X_LSB_ADDR(0X55), ACCEL_OFFSET_X_MSB_ADDR(0X56), ACCEL_OFFSET_Y_LSB_ADDR(
-				0X57), ACCEL_OFFSET_Y_MSB_ADDR(0X58), ACCEL_OFFSET_Z_LSB_ADDR(0X59), ACCEL_OFFSET_Z_MSB_ADDR(0X5A),
+		ACCEL_OFFSET_X_LSB_ADDR(0X55), ACCEL_OFFSET_X_MSB_ADDR(0X56), ACCEL_OFFSET_Y_LSB_ADDR(0X57),
+		ACCEL_OFFSET_Y_MSB_ADDR(0X58), ACCEL_OFFSET_Z_LSB_ADDR(0X59), ACCEL_OFFSET_Z_MSB_ADDR(0X5A),
 
 		/* Magnetometer Offset registers */
-		MAG_OFFSET_X_LSB_ADDR(0X5B), MAG_OFFSET_X_MSB_ADDR(0X5C), MAG_OFFSET_Y_LSB_ADDR(0X5D), MAG_OFFSET_Y_MSB_ADDR(
-				0X5E), MAG_OFFSET_Z_LSB_ADDR(0X5F), MAG_OFFSET_Z_MSB_ADDR(0X60),
+		MAG_OFFSET_X_LSB_ADDR(0X5B), MAG_OFFSET_X_MSB_ADDR(0X5C), MAG_OFFSET_Y_LSB_ADDR(0X5D),
+		MAG_OFFSET_Y_MSB_ADDR(0X5E), MAG_OFFSET_Z_LSB_ADDR(0X5F), MAG_OFFSET_Z_MSB_ADDR(0X60),
 
 		/* Gyroscope Offset register s */
-		GYRO_OFFSET_X_LSB_ADDR(0X61), GYRO_OFFSET_X_MSB_ADDR(0X62), GYRO_OFFSET_Y_LSB_ADDR(
-				0X63), GYRO_OFFSET_Y_MSB_ADDR(0X64), GYRO_OFFSET_Z_LSB_ADDR(0X65), GYRO_OFFSET_Z_MSB_ADDR(0X66),
+		GYRO_OFFSET_X_LSB_ADDR(0X61), GYRO_OFFSET_X_MSB_ADDR(0X62), GYRO_OFFSET_Y_LSB_ADDR(0X63),
+		GYRO_OFFSET_Y_MSB_ADDR(0X64), GYRO_OFFSET_Z_LSB_ADDR(0X65), GYRO_OFFSET_Z_MSB_ADDR(0X66),
 
 		/* Radius registers */
 		ACCEL_RADIUS_LSB_ADDR(0X67), ACCEL_RADIUS_MSB_ADDR(0X68), MAG_RADIUS_LSB_ADDR(0X69), MAG_RADIUS_MSB_ADDR(0X6A);
@@ -212,11 +203,11 @@ public class BNO055 {
 
 	public enum opmode_t {
 		/* Operation mode settings */
-		OPERATION_MODE_CONFIG(0X00), OPERATION_MODE_ACCONLY(0X01), OPERATION_MODE_MAGONLY(0X02), OPERATION_MODE_GYRONLY(
-				0X03), OPERATION_MODE_ACCMAG(0X04), OPERATION_MODE_ACCGYRO(
-						0X05), OPERATION_MODE_MAGGYRO(0X06), OPERATION_MODE_AMG(0X07), OPERATION_MODE_IMUPLUS(
-								0X08), OPERATION_MODE_COMPASS(0X09), OPERATION_MODE_M4G(
-										0X0A), OPERATION_MODE_NDOF_FMC_OFF(0X0B), OPERATION_MODE_NDOF(0X0C);
+		OPERATION_MODE_CONFIG(0X00), OPERATION_MODE_ACCONLY(0X01), OPERATION_MODE_MAGONLY(0X02),
+		OPERATION_MODE_GYRONLY(0X03), OPERATION_MODE_ACCMAG(0X04), OPERATION_MODE_ACCGYRO(0X05),
+		OPERATION_MODE_MAGGYRO(0X06), OPERATION_MODE_AMG(0X07), OPERATION_MODE_IMUPLUS(0X08),
+		OPERATION_MODE_COMPASS(0X09), OPERATION_MODE_M4G(0X0A), OPERATION_MODE_NDOF_FMC_OFF(0X0B),
+		OPERATION_MODE_NDOF(0X0C);
 
 		private final int val;
 
@@ -245,12 +236,12 @@ public class BNO055 {
 	}
 
 	public enum vector_type_t {
-		VECTOR_ACCELEROMETER(reg_t.BNO055_ACCEL_DATA_X_LSB_ADDR.getVal()), VECTOR_MAGNETOMETER(
-				reg_t.BNO055_MAG_DATA_X_LSB_ADDR.getVal()), VECTOR_GYROSCOPE(
-						reg_t.BNO055_GYRO_DATA_X_LSB_ADDR.getVal()), VECTOR_EULER(
-								reg_t.BNO055_EULER_H_LSB_ADDR.getVal()), VECTOR_LINEARACCEL(
-										reg_t.BNO055_LINEAR_ACCEL_DATA_X_LSB_ADDR.getVal()), VECTOR_GRAVITY(
-												reg_t.BNO055_GRAVITY_DATA_X_LSB_ADDR.getVal());
+		VECTOR_ACCELEROMETER(reg_t.BNO055_ACCEL_DATA_X_LSB_ADDR.getVal()),
+		VECTOR_MAGNETOMETER(reg_t.BNO055_MAG_DATA_X_LSB_ADDR.getVal()),
+		VECTOR_GYROSCOPE(reg_t.BNO055_GYRO_DATA_X_LSB_ADDR.getVal()),
+		VECTOR_EULER(reg_t.BNO055_EULER_H_LSB_ADDR.getVal()),
+		VECTOR_LINEARACCEL(reg_t.BNO055_LINEAR_ACCEL_DATA_X_LSB_ADDR.getVal()),
+		VECTOR_GRAVITY(reg_t.BNO055_GRAVITY_DATA_X_LSB_ADDR.getVal());
 
 		private final int val;
 
@@ -266,10 +257,8 @@ public class BNO055 {
 	/**
 	 * Instantiates a new BNO055 class.
 	 *
-	 * @param port
-	 *            the physical port the sensor is plugged into on the roboRio
-	 * @param address
-	 *            the address the sensor is at (0x28 or 0x29)
+	 * @param port    the physical port the sensor is plugged into on the roboRio
+	 * @param address the address the sensor is at (0x28 or 0x29)
 	 */
 	private BNO055(I2C.Port port, byte address) {
 		imu = new I2C(port, address);
@@ -281,12 +270,9 @@ public class BNO055 {
 	/**
 	 * Get an instance of the IMU object.
 	 * 
-	 * @param mode
-	 *            the operating mode to run the sensor in.
-	 * @param port
-	 *            the physical port the sensor is plugged into on the roboRio
-	 * @param address
-	 *            the address the sensor is at (0x28 or 0x29)
+	 * @param mode    the operating mode to run the sensor in.
+	 * @param port    the physical port the sensor is plugged into on the roboRio
+	 * @param address the address the sensor is at (0x28 or 0x29)
 	 * @return the instantiated BNO055 object
 	 */
 	public static BNO055 getInstance(opmode_t mode, vector_type_t vectorType, I2C.Port port, byte address) {
@@ -302,11 +288,9 @@ public class BNO055 {
 	 * Get an instance of the IMU object plugged into the onboard I2C header. Using
 	 * the default address (0x28)
 	 * 
-	 * @param mode
-	 *            the operating mode to run the sensor in.
-	 * @param vectorType
-	 *            the format the position vector data should be returned in (if you
-	 *            don't know use VECTOR_EULER).
+	 * @param mode       the operating mode to run the sensor in.
+	 * @param vectorType the format the position vector data should be returned in
+	 *                   (if you don't know use VECTOR_EULER).
 	 * @return the instantiated BNO055 object
 	 */
 	public static BNO055 getInstance(opmode_t mode, vector_type_t vectorType) {
@@ -680,10 +664,8 @@ public class BNO055 {
 	/**
 	 * Writes an 8 bit value over I2C
 	 * 
-	 * @param reg
-	 *            the register to write the data to
-	 * @param value
-	 *            a byte of data to write
+	 * @param reg   the register to write the data to
+	 * @param value a byte of data to write
 	 * @return whatever I2CJNI.i2CWrite returns. It's not documented in the wpilib
 	 *         javadocs!
 	 */
@@ -698,8 +680,7 @@ public class BNO055 {
 	/**
 	 * Reads an 8 bit value over I2C
 	 * 
-	 * @param reg
-	 *            the register to read from.
+	 * @param reg the register to read from.
 	 * @return
 	 */
 	private byte read8(reg_t reg) {
@@ -712,10 +693,8 @@ public class BNO055 {
 	/**
 	 * Reads the specified number of bytes over I2C
 	 *
-	 * @param reg
-	 *            the address to read from
-	 * @param buffer
-	 *            to store the read data into
+	 * @param reg    the address to read from
+	 * @param buffer to store the read data into
 	 * @return true on success
 	 */
 	private boolean readLen(reg_t reg, byte[] buffer) {
@@ -725,10 +704,8 @@ public class BNO055 {
 	/**
 	 * Reads the specified number of bytes over I2C
 	 *
-	 * @param reg
-	 *            the address to read from
-	 * @param buffer
-	 *            the size of the data to read
+	 * @param reg    the address to read from
+	 * @param buffer the size of the data to read
 	 * @return true on success
 	 */
 	private boolean readLen(int reg, byte[] buffer) {

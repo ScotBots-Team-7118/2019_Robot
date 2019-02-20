@@ -227,7 +227,7 @@ public class DriveBase {
      */
     public double[] formatDriveJoystick(double x, double y) {
         // NOTE: Z-axis likely not needed, maybe should remove later
-        double[] joyArray = { x, y};
+        double[] joyArray = { x, y };
         return joyArray;
     }
 

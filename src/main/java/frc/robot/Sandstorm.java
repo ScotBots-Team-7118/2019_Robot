@@ -4,13 +4,19 @@ package frc.robot;
 
 public class Sandstorm {
     // Object Declaration.
-    
+
     // Variable Declaration.
-    enum AutoPosition {DEFAULT, LEFT, RIGHT, CENTER};
-    enum AutoState {FIRST_STEP};
+    enum AutoPosition {
+        DEFAULT, LEFT, RIGHT, CENTER
+    };
+
+    enum AutoState {
+        FIRST_STEP
+    };
+
     private AutoState phase;
     private AutoPosition position;
-    
+
     /**
      * Constructs a new Sandstorm object.
      */
@@ -22,8 +28,8 @@ public class Sandstorm {
      * Runs the program for the game's designated sandstorm phase.
      */
     public void run() {
-        switch(phase) {
-            case FIRST_STEP:
+        switch (phase) {
+        case FIRST_STEP:
             break;
         }
     }
@@ -44,11 +50,12 @@ public class Sandstorm {
     }
 
     /**
-     * Advances the autonomous progression to the next step
-     * and resets the appropriate sensors.
+     * Advances the autonomous progression to the next step and resets the
+     * appropriate sensors.
+     * 
      * @param step
      */
-    public void nextStep (AutoState step) {
+    public void nextStep(AutoState step) {
         phase = step;
     }
 }
