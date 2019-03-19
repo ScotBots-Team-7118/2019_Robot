@@ -1,11 +1,21 @@
-// Imports needed for Pillow class
 package frc.robot;
 
+// Imports needed for Pillow class
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
+
+/** Methods:
+ * public Pillow()
+ * public void pillowTest()
+ * public boolean isOpen()
+ * public boolean isClosed()
+ * public void runDoor(int direction)
+ * public void runPillow(boolean openingButton, boolean closingButton)
+ * public boolean closedState()
+ * public void reset()
+ */
 
 /**
  * Framework for an object that controls the relevant devices to the Pillow
@@ -22,7 +32,8 @@ public class Pillow {
     private final int STOP = 0;
     private final int FORWARDS = 1;
     private final int BACKWARDS = -1;
-    //pillow test variables
+    
+    // Pillow test variables
     private static int iteration = 0;
     private String stateTest ="DefaultValue"; 
 
@@ -31,6 +42,7 @@ public class Pillow {
         OPEN, OPENING, CLOSED, CLOSING
     }
 
+    // Variable representing the current state of the Pillow
     public PillowStates state;
 
     /**
@@ -41,8 +53,11 @@ public class Pillow {
         talOpen = new TalonSRX(PILLOW_TALON_PORT);
         limOpen = new DigitalInput(0);
         limClosed = new DigitalInput(1);
+
+        reset();
     }
 
+    // NOTE: High priority to remove this and start using the state machine with limit switches
     /**
      * Sends pillow values to dashboard
      */
@@ -77,19 +92,18 @@ public class Pillow {
         return limClosed.get();
     }
 
-    // NOTE: Does this need to take an input of a double or can we just use +-1?
     /**
      * Runs the talon in a given direction (input of 0, 1, or -1).
      * 
      * @param direction
      */
-    public void run(int direction) {
+    public void runDoor(int direction) {
         if (direction == 0)
             talOpen.set(ControlMode.PercentOutput, 0);
         else if (direction == 1 || direction == -1)
             talOpen.set(ControlMode.PercentOutput, direction * PILLOW_TALON_SPEED);
         else {
-            System.out.println("Invalid input for run(direction) in Pillow.java.");
+            System.out.println("Invalid input for runDoor(direction) in Pillow.java.");
             talOpen.set(ControlMode.PercentOutput, 0);
         }
     }
@@ -100,7 +114,7 @@ public class Pillow {
      * @param openingButton
      * @param closingButton
      */
-    public void runPillow(boolean openingButton, boolean closingButton) {
+    public void run(boolean openingButton, boolean closingButton) {
         switch (state) {
         // State representing a closed and immobile Pillow door
         case CLOSED:
@@ -110,7 +124,7 @@ public class Pillow {
                 state = PillowStates.OPENING;
             } else {
                 // Otherwise, stop the Pillow axle from moving
-                run(STOP);
+                runDoor(STOP);
             }
             break;
 
@@ -120,7 +134,7 @@ public class Pillow {
             // If the appropriate button is pressed and the door isn't open, set the motor
             // to open the door
             if (openingButton && !isOpen()) {
-                run(FORWARDS);
+                runDoor(FORWARDS);
             }
             // Otherwise, if the closing button is pressed, stop opening the door
             // and instead start closing it
@@ -129,10 +143,10 @@ public class Pillow {
             }
             // Otherwise, if the limit door is open, stop moving
             else if (isOpen()) {
-                run(STOP);
+                runDoor(STOP);
                 state = PillowStates.OPEN;
             } else {
-                run(STOP);
+                runDoor(STOP);
             }
             break;
 
@@ -145,7 +159,7 @@ public class Pillow {
             }
             // Otherwise, keep the pillow door still
             else {
-                run(STOP);
+                runDoor(STOP);
             }
             break;
 
@@ -155,7 +169,7 @@ public class Pillow {
             // If the appropriate button is pressed and the door isn't closed,
             // set the motors to close the Pillow door
             if (closingButton && !isClosed()) {
-                run(BACKWARDS);
+                runDoor(BACKWARDS);
             }
             // Otherwise, if the opening button is pressed, stop closing the door
             // and instead start opening it
@@ -164,10 +178,10 @@ public class Pillow {
             }
             // Otherwise, if the Pillow door is closed, stop the door from moving
             else if (isClosed()) {
-                run(STOP);
+                runDoor(STOP);
                 state = PillowStates.CLOSED;
             } else {
-                run(STOP);
+                runDoor(STOP);
             }
         }
     }
@@ -183,5 +197,12 @@ public class Pillow {
             return true;
         else
             return false;
+    }
+
+    /**
+     * Resets the Pillow mechanism state for a new match.
+     */
+    public void reset() {
+        state = PillowStates.CLOSED;
     }
 }

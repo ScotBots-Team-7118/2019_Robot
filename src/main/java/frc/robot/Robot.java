@@ -11,13 +11,17 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.cameraserver.*;
-// import edu.wpi.cscore.UsbCamera;
-// import edu.wpi.cscore.CvSink;
-// import edu.wpi.cscore.CvSource;
-// import org.opencv.core.Mat;
-// import org.opencv.imgproc.Imgproc;
-// import org.opencv.core.Point;
-// import org.opencv.core.Size;
+
+/** Methods:
+ * public void robotInit()
+ * public void robotPeriodic()
+ * public void disabledInit()
+ * public void autonomousInit()
+ * public void autonomousPeriodic()
+ * public void teleopInit()
+ * public void teleopPeriodic()
+ * public void testPeriodic()
+ */
 
 
 /**
@@ -44,7 +48,6 @@ public class Robot extends TimedRobot {
   private final int PILLOW_BUTTON_OPEN = 3;
   private final int PILLOW_BUTTON_CLOSED = 4;
 
-  
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -61,7 +64,6 @@ public class Robot extends TimedRobot {
     CameraServer.getInstance().startAutomaticCapture(0);
     CameraServer.getInstance().startAutomaticCapture(1);
     // runCamera();
-
   }
 
 //   public void runCamera(){
@@ -97,8 +99,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    // NOTE: Does this need to be here? We should test since this can cause a lot of errors
     plunger.plungertest();
-
   }
 
   /**
@@ -143,16 +145,16 @@ public class Robot extends TimedRobot {
     // Format the joystick axes to be used for teleopDrive
     joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), rawJoyR.getRawAxis(1));
     joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
+    
     // Use the formatted joystick data to drive the robot
     driveBase.teleopDrive(joyR, joyL);
-    // Run the plunger according to the state machine within the class and the given
-    // suction button
-    pillow.runPillow(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
+    
+    // Run the plunger according to the state machine within the class and the given suction button
+    pillow.run(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
 
-    // Run the plunger according to the state machine within the class and the given
-    // suction button
+    // Run the plunger according to the state machine within the class and the given suction button
     plunger.runPiston(rawJoyR.getRawButtonPressed(PISTON_BUTTON));
-    plunger.runPlunger(rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
+    plunger.regulateState(rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
     plunger.runSolenoid();
     plunger.runCompressor();
   }
@@ -162,11 +164,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    // driveBase.setRight(rawJoyR.getRawAxis(1)*0.3);
-    // driveBase.setLeft(rawJoyL.getRawAxis(1)*0.3);
-    // driveBase.setCenter(rawJoyR.getRawAxis(0)*0.3);
-    joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), -rawJoyR.getRawAxis(1));
-    joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
-    driveBase.teleopDrive(joyR, joyL);
+    
   }
 }

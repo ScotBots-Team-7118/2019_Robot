@@ -1,6 +1,17 @@
-// Imports for the "Gyroscope.java" class.
 package frc.robot;
 
+/** Methods:
+ * public Gyroscope()
+ * public double getOffsetHeading()
+ * public void reset()
+ * public double getRawHeading()
+ * public double getOffset()
+ * private double normalizeHeadingVal(double heading)
+ */
+
+/**
+ * Framework for an object that manages input from a BNO055 Gyroscope.
+ */
 public class Gyroscope {
 	// Defines the variable imu from the class BNO055
 	public static BNO055 imu = BNO055.getInstance(BNO055.opmode_t.OPERATION_MODE_IMUPLUS, BNO055.vector_type_t.VECTOR_EULER);
