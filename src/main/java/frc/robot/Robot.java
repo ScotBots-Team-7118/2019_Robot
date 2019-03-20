@@ -165,8 +165,10 @@ public class Robot extends TimedRobot {
     // driveBase.setRight(rawJoyR.getRawAxis(1)*0.3);
     // driveBase.setLeft(rawJoyL.getRawAxis(1)*0.3);
     // driveBase.setCenter(rawJoyR.getRawAxis(0)*0.3);
-    joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), -rawJoyR.getRawAxis(1));
-    joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
-    driveBase.teleopDrive(joyR, joyL);
+    //joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), -rawJoyR.getRawAxis(1));
+    //joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
+    //driveBase.teleopDrive(joyR, joyL);
+    pillow.runPillow(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
+  pillow.pillowTest();
   }
 }

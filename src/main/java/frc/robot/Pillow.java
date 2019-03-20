@@ -39,8 +39,10 @@ public class Pillow {
     public Pillow() {
         // Object initialization
         talOpen = new TalonSRX(PILLOW_TALON_PORT);
+        talOpen.setInverted(true);
         limOpen = new DigitalInput(0);
         limClosed = new DigitalInput(1);
+        state = PillowStates.CLOSED;
     }
 
     /**
@@ -53,6 +55,7 @@ public class Pillow {
             SmartDashboard.putBoolean("Open", isOpen());
             SmartDashboard.putBoolean("Closed", isClosed());
             SmartDashboard.putString("State", stateTest);
+            SmartDashboard.putNumber("Motor Current", talOpen.getOutputCurrent());
         }
     }
 
@@ -62,7 +65,7 @@ public class Pillow {
      * @return the current value of the limit switch (open = true, closed = false)
      */
     public boolean isOpen() {
-        return limOpen.get();
+        return !limOpen.get();
 
     }
 
@@ -74,7 +77,7 @@ public class Pillow {
      *         open = false)
      */
     public boolean isClosed() {
-        return limClosed.get();
+        return !limClosed.get();
     }
 
     // NOTE: Does this need to take an input of a double or can we just use +-1?
@@ -101,6 +104,7 @@ public class Pillow {
      * @param closingButton
      */
     public void runPillow(boolean openingButton, boolean closingButton) {
+        System.out.println("lim Open = " + isOpen() + "lim Closed = " + isClosed());
         switch (state) {
         // State representing a closed and immobile Pillow door
         case CLOSED:
