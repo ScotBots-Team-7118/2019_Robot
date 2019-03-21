@@ -147,7 +147,7 @@ public class Robot extends TimedRobot {
     driveBase.teleopDrive(joyR, joyL);
     // Run the plunger according to the state machine within the class and the given
     // suction button
-    pillow.runPillow(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
+    pillow.run(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
 
     // Run the plunger according to the state machine within the class and the given
     // suction button
@@ -168,7 +168,6 @@ public class Robot extends TimedRobot {
     //joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), -rawJoyR.getRawAxis(1));
     //joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
     //driveBase.teleopDrive(joyR, joyL);
-    pillow.runPillow(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
-  pillow.pillowTest();
+    pillow.run(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
   }
 }

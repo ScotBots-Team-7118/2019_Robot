@@ -1,11 +1,21 @@
-// Imports needed for Pillow class
 package frc.robot;
 
+// Imports needed for Pillow class
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
+
+/** Methods:
+ * public Pillow()
+ * public boolean isOpen()
+ * public boolean isClosed()
+ * public void runDoor(int direction)
+ * public void run(boolean openingButton, boolean closingButton)
+ * public boolean closedState()
+ * public void reset()
+ * public void changeState(PillowStates newState)
+ */
 
 /**
  * Framework for an object that controls the relevant devices to the Pillow
@@ -14,7 +24,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 public class Pillow {
     // Object declaration
     private TalonSRX talOpen;
-    private DigitalInput limOpen, limClosed;
+    private DigitalInput limClosed;
 
     // Variable initialization
     private final int PILLOW_TALON_PORT = 3;
@@ -22,41 +32,26 @@ public class Pillow {
     private final int STOP = 0;
     private final int FORWARDS = 1;
     private final int BACKWARDS = -1;
-    //pillow test variables
-    private static int iteration = 0;
-    private String stateTest ="DefaultValue"; 
 
-    // States for the runPillow() function
+    // States for the run() function
     public enum PillowStates {
-        OPEN, OPENING, CLOSED, CLOSING
+        OPENING, CLOSED, CLOSING, IDLE
     }
 
-    public PillowStates state;
+    private PillowStates state;
+    private String stateValue;
 
     /**
      * Constructs and intitalizes a new Pillow object.
      */
-    public Pillow() {
+    public Pillow()
+    {
         // Object initialization
         talOpen = new TalonSRX(PILLOW_TALON_PORT);
         talOpen.setInverted(true);
-        limOpen = new DigitalInput(0);
         limClosed = new DigitalInput(1);
-        state = PillowStates.CLOSED;
-    }
-
-    /**
-     * Sends pillow values to dashboard
-     */
-    public void pillowTest() {
-        iteration++;
-        if((iteration%20) == 0)
-        {
-            SmartDashboard.putBoolean("Open", isOpen());
-            SmartDashboard.putBoolean("Closed", isClosed());
-            SmartDashboard.putString("State", stateTest);
-            SmartDashboard.putNumber("Motor Current", talOpen.getOutputCurrent());
-        }
+        
+        reset();
     }
 
     /**
@@ -64,9 +59,9 @@ public class Pillow {
      * 
      * @return the current value of the limit switch (open = true, closed = false)
      */
-    public boolean isOpen() {
-        return !limOpen.get();
-
+    public boolean isOpen()
+    {
+        return !isClosed();
     }
 
     /**
@@ -76,23 +71,25 @@ public class Pillow {
      * @return the inverse of the current value of the limit switch (closed = true,
      *         open = false)
      */
-    public boolean isClosed() {
+    public boolean isClosed()
+    {
         return !limClosed.get();
     }
 
     // NOTE: Does this need to take an input of a double or can we just use +-1?
     /**
-     * Runs the talon in a given direction (input of 0, 1, or -1).
+     * Runs the door talon in a given direction (input of 0, 1, or -1).
      * 
      * @param direction
      */
-    public void run(int direction) {
+    public void runDoor(int direction)
+    {
         if (direction == 0)
             talOpen.set(ControlMode.PercentOutput, 0);
         else if (direction == 1 || direction == -1)
             talOpen.set(ControlMode.PercentOutput, direction * PILLOW_TALON_SPEED);
         else {
-            System.out.println("Invalid input for run(direction) in Pillow.java.");
+            System.out.println("Invalid input for runDoor(direction) in Pillow.java.");
             talOpen.set(ControlMode.PercentOutput, 0);
         }
     }
@@ -103,77 +100,94 @@ public class Pillow {
      * @param openingButton
      * @param closingButton
      */
-    public void runPillow(boolean openingButton, boolean closingButton) {
-        System.out.println("lim Open = " + isOpen() + "lim Closed = " + isClosed());
-        switch (state) {
-        // State representing a closed and immobile Pillow door
+    public void run(boolean openingButton, boolean closingButton)
+    {
+        // Send the current limit switch values to the SmartDashboard
+        SmartDashboard.putBoolean("Open", isOpen());
+        SmartDashboard.putBoolean("Closed", isClosed());
+
+        switch (state)
+        {
+        case IDLE:
+            stateValue = "Idle";
+            // If the door is closed, change to represent a closed state
+            if (isClosed())
+            {
+                changeState(PillowStates.CLOSED);
+            }
+            // Otherwise, if the closing button is pressed, change state to close the door
+            else if (closingButton)
+            {
+                changeState(PillowStates.CLOSING);
+            }
+            // Otherwise, if the opening button is pressed, change state to open the door
+            else if (openingButton)
+            {
+                changeState(PillowStates.OPENING);
+            }
+            // Otherwise, keep the door idle (as the state dictates)
+            else runDoor(STOP);
+            break;
+
         case CLOSED:
-            stateTest = "Closed";
-            // If the appropriate button is pressed, begin opening the pillow door
-            if (openingButton) {
-                state = PillowStates.OPENING;
-            } else {
-                // Otherwise, stop the Pillow axle from moving
-                run(STOP);
+            stateValue = "Closed";
+            // If the door is open, change to represent an open and idle state
+            if (isOpen())
+            {
+                changeState(PillowStates.IDLE);
             }
+            // Otherwise, if the opening button is pressed, change state to open the door
+            else if (openingButton)
+            {
+                changeState(PillowStates.OPENING);
+            }
+            // Otherwise, keep the door closed and idel as the state dictates
+            else runDoor(STOP);
             break;
 
-        // State representing a Pillow door in the process of opening up
         case OPENING:
-            stateTest = "Opening";
-            // If the appropriate button is pressed and the door isn't open, set the motor
-            // to open the door
-            if (openingButton && !isOpen()) {
-                run(FORWARDS);
+            stateValue = "Opening";
+            // If the opening button isn't pressed,
+            // change state to represent an idle, open door
+            if (!openingButton)
+            {
+                changeState(PillowStates.IDLE);
             }
-            // Otherwise, if the closing button is pressed, stop opening the door
-            // and instead start closing it
-            else if (closingButton) {
-                state = PillowStates.CLOSING;
+            // Otherwise, if the closing button is pressed, change state to close the door
+            else if (closingButton)
+            {
+                changeState(PillowStates.CLOSED);
             }
-            // Otherwise, if the limit door is open, stop moving
-            else if (isOpen()) {
-                run(STOP);
-                state = PillowStates.OPEN;
-            } else {
-                run(STOP);
-            }
+            // Otherwise, run the pillow door to open as the state dictates
+            else runDoor(FORWARDS);
             break;
 
-        // State representing an open and immobile Pillow door
-        case OPEN:
-            stateTest = "Open";
-            // If the closing button is pressed, begin to close the Pillow door
-            if (closingButton) {
-                state = PillowStates.CLOSING;
-            }
-            // Otherwise, keep the pillow door still
-            else {
-                run(STOP);
-            }
-            break;
-
-        // State representing a Pillow door in the process of closing
         case CLOSING:
-            stateTest = "Closing";
-            // If the appropriate button is pressed and the door isn't closed,
-            // set the motors to close the Pillow door
-            if (closingButton && !isClosed()) {
-                run(BACKWARDS);
+            stateValue = "Closing";
+            // If the pillow door is closed completely,
+            // change state to represent a closed, idle door
+            if (isClosed())
+            {
+                changeState(PillowStates.CLOSED);
             }
-            // Otherwise, if the opening button is pressed, stop closing the door
-            // and instead start opening it
-            else if (openingButton) {
-                state = PillowStates.OPENING;
+            // Otherwise, if the closing button isn't pressed,
+            // change state to represent an open, idle door
+            else if (!closingButton)
+            {
+                changeState(PillowStates.IDLE);
             }
-            // Otherwise, if the Pillow door is closed, stop the door from moving
-            else if (isClosed()) {
-                run(STOP);
-                state = PillowStates.CLOSED;
-            } else {
-                run(STOP);
+            // Otherwise, if the opening button is pressed, change state to open the door
+            else if (openingButton)
+            {
+                changeState(PillowStates.OPENING);
             }
+            // Otherwise, run the pillow door to close as the state dictates
+            else runDoor(BACKWARDS);
+            break;
         }
+
+        // Send the state that ran to the SmartDashboard
+        SmartDashboard.putString("Pillow State", stateValue);
     }
 
     /**
@@ -182,10 +196,30 @@ public class Pillow {
      * 
      * @return If it is safe to extend the plunger arm or not.
      */
-    public boolean closedState() {
+    public boolean closedState()
+    {
         if (state == PillowStates.CLOSED || state == PillowStates.CLOSING)
             return true;
         else
             return false;
+    }
+
+    /**
+     * Resets the state of the pillow for robot initialization.
+     */
+    public void reset()
+    {
+        if (isClosed()) changeState(PillowStates.CLOSED);
+        else changeState(PillowStates.IDLE);
+    }
+
+    /**
+     * Changes the state of the Pillow and resets the necessary sensors/devices.
+     * @param newState
+     */
+    public void changeState(PillowStates newState)
+    {
+        state = newState;
+        runDoor(STOP);
     }
 }
