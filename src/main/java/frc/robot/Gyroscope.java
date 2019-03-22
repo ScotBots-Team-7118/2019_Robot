@@ -23,7 +23,8 @@ public class Gyroscope {
 	/**
 	 * Constructs a new Gyroscope object.
 	 */
-	public Gyroscope() {
+	public Gyroscope()
+	{
 		// Resets the gyro
 		reset();
 	}
@@ -32,7 +33,8 @@ public class Gyroscope {
 	 * Returns the heading in relation to the offset.
 	 * @return
 	 */
-	public double getOffsetHeading() {
+	public double getOffsetHeading()
+	{
 		// Returns the remainder of the current angle divided by 180
 		return normalizeHeadingVal(getRawHeading() - angleOffset);
 	}
@@ -40,7 +42,8 @@ public class Gyroscope {
 	/**
 	 * Resets the angle offset to the current heading.
 	 */
-	public void reset() {
+	public void reset()
+	{
 		// Sets angleOffset to the raw heading of the gyro
 		angleOffset = getRawHeading();
 
@@ -56,7 +59,8 @@ public class Gyroscope {
 	 * Gets the normalized heading of the gyroscope without taking the angle offset into account.
 	 * @return
 	 */
-	public double getRawHeading() {
+	public double getRawHeading()
+	{
 		return normalizeHeadingVal(imu.getVector()[0]);
 	}
 	
@@ -64,7 +68,8 @@ public class Gyroscope {
 	 * Returns the angle offset.
 	 * @return
 	 */
-	public double getOffset() {
+	public double getOffset()
+	{
 		return angleOffset;
 	}
 
@@ -72,7 +77,8 @@ public class Gyroscope {
 	 * Normalizes a heading value to the range of (-180, 180) degrees.
 	 * @return
 	 */
-	private double normalizeHeadingVal(double heading) {
+	private double normalizeHeadingVal(double heading)
+	{
 		heading = heading%360;
 		// Checks if the remainder of the given heading and 360 is greater than 180
 		if (heading > 180.0) {
