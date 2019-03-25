@@ -28,7 +28,7 @@ public class Pillow {
 
     // Variable initialization
     private final int PILLOW_TALON_PORT = 3;
-    private final double PILLOW_TALON_SPEED = 0.3;
+    private final double PILLOW_TALON_SPEED = 0.7;
     private final int STOP = 0;
     private final int FORWARDS = 1;
     private final int BACKWARDS = -1;
@@ -102,9 +102,9 @@ public class Pillow {
      */
     public void run(boolean openingButton, boolean closingButton)
     {
-        // Send the current limit switch values to the SmartDashboard
-        SmartDashboard.putBoolean("Open", isOpen());
-        SmartDashboard.putBoolean("Closed", isClosed());
+        // // Send the current limit switch values to the SmartDashboard
+        // SmartDashboard.putBoolean("Open", isOpen());
+        // SmartDashboard.putBoolean("Closed", isClosed());
 
         switch (state)
         {
@@ -187,7 +187,7 @@ public class Pillow {
         }
 
         // Send the state that ran to the SmartDashboard
-        SmartDashboard.putString("Pillow State", stateValue);
+        // SmartDashboard.putString("Pillow State", stateValue);
     }
 
     /**

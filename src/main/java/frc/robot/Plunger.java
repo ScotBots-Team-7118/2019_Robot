@@ -1,9 +1,12 @@
 package frc.robot;
 
 // Imports for the Plunger Class
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Compressor;
 
 /** Methods:
@@ -28,7 +31,7 @@ public class Plunger {
     // Object declaration
     Solenoid upstreamSolenoid;
     Solenoid downstreamSolenoid;
-    Solenoid piston;
+    DoubleSolenoid piston;
     AnalogInput pressureSensor;
     AnalogInput vacuumSensor;
     Timer timer;
@@ -49,11 +52,12 @@ public class Plunger {
     public static final int DOWNSTREAM_SOLENOID_CHANNEL = 1;
     public static final int PRESSURE_SENSOR_CHANNEL = 2;
     public static final int VACUUM_SENSOR_CHANNEL = 3;
-    public static final int PISTON_SOLENOID_CHANNEL = 0;
+    public static final int PISTON_FWD_SOLENOID_CHANNEL = 0;
+    public static final int PISTON_RVS_SOLENOID_CHANNEL = 3;
 
     // Variables for the solenoid sensor
-    public static final double VACUUM_SENSOR_IDEAL_VAC = -4;
-    public static final double VACUUM_SENSOR_MIN_VAC = -3;
+    public static final double VACUUM_SENSOR_IDEAL_VAC = -6;
+    public static final double VACUUM_SENSOR_MIN_VAC = -5;
 
     // Variables for timing while running the plunger
     public static final double WAIT_TIME = 0.01;
@@ -70,7 +74,7 @@ public class Plunger {
         // Object initialization
         upstreamSolenoid = new Solenoid(UPSTREAM_SOLENOID_CHANNEL);
         downstreamSolenoid = new Solenoid(DOWNSTREAM_SOLENOID_CHANNEL);
-        piston = new Solenoid(PISTON_SOLENOID_CHANNEL);
+        piston = new DoubleSolenoid(PISTON_FWD_SOLENOID_CHANNEL, PISTON_RVS_SOLENOID_CHANNEL);
         pressureSensor = new AnalogInput(PRESSURE_SENSOR_CHANNEL);
         vacuumSensor = new AnalogInput(VACUUM_SENSOR_CHANNEL);
         compressor = new Compressor();
@@ -130,7 +134,12 @@ public class Plunger {
     {
         if (pistonButton)
         {
-        piston.set(!piston.get());
+            // piston.set(!piston.get());
+            if (piston.get() == DoubleSolenoid.Value.kForward)
+            {
+                piston.set(DoubleSolenoid.Value.kReverse);
+            }
+            else piston.set(DoubleSolenoid.Value.kForward);
         }
     }
 
@@ -154,7 +163,7 @@ public class Plunger {
         switch (state) {
         case CLOSED:
             // On button press, switch to vacuum on
-            if (buttonPress)
+            if (buttonPress && getPressure() >= 20)
             {
                 state = plungerState.VACUUM_ON;
             }
@@ -248,7 +257,7 @@ public class Plunger {
         {
         // all solenoids closed
         case CLOSED:
-            setSolenoids(false, false);
+            setSolenoids(false, true);
             break;
 
         // all solenoids open
@@ -277,6 +286,18 @@ public class Plunger {
             break;
         }
     }
+    /**
+     * printing values to smart dash
+     */
+    public void printValues() {
+        SmartDashboard.putNumber("Pressure", getPressure());
+        SmartDashboard.putNumber("Vacuum", getVacuum());
+        SmartDashboard.putBoolean("upstream", upstreamSolenoid.get());
+        SmartDashboard.putBoolean("downstream", downstreamSolenoid.get());
+        SmartDashboard.putString("State", state.toString());
+
+        // SmartDashboard.putBoolean("Piston", piston.get() == DoubleSolenoid.Value.kForward);
+    }
 
     /**
      * Executes all the necessary methods to run the plunger mechanism.
@@ -285,10 +306,12 @@ public class Plunger {
      */
     public void run(boolean pistonButton, boolean suctionButton)
     {
+        printValues();
         runPiston(pistonButton);
         regulateState(suctionButton);
         runSolenoid();
         runCompressor();
+        System.out.println(state.toString());
     }
 
     public void reset() {

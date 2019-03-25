@@ -11,6 +11,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.*;
 
 /** Methods:
@@ -44,8 +45,8 @@ public class Robot extends TimedRobot {
   private final int JOY_R_PORT = 1;
   private final int JOY_L_PORT = 0;
   private double[] joyR = { 0, 0, 0 }, joyL = { 0, 0, 0 };
-  private final int SUCTION_BUTTON = 1;
-  private final int PISTON_BUTTON = 1;
+  private final int SUCTION_BUTTON = 6;
+  private final int PISTON_BUTTON = 5;
   private final int PILLOW_BUTTON_OPEN = 4;
   private final int PILLOW_BUTTON_CLOSED = 3;
 
@@ -65,8 +66,10 @@ public class Robot extends TimedRobot {
     plunger = new Plunger();
 
     // Starts automatic capture for the Sandstorm cameras
-    CameraServer.getInstance().startAutomaticCapture(0);
-    CameraServer.getInstance().startAutomaticCapture(1);
+    UsbCamera cam1 = CameraServer.getInstance().startAutomaticCapture(0);
+    UsbCamera cam2 = CameraServer.getInstance().startAutomaticCapture(1);
+    cam1.setFPS(10);
+    cam2.setFPS(10);
   }
 
   /**
@@ -77,8 +80,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit()
   {
-    // TODO: Make sure with Nathaniel that this is necessary
-    plunger.runPiston(false);
   }
 
   /**
@@ -87,7 +88,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit()
   {
-    gyro.reset();
+    //gyro.reset();
+    plunger.reset();
   }
 
   /**
@@ -96,24 +98,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic()
   {
-    SmartDashboard.putNumber("Gyroscope Value", gyro.getOffsetHeading());
-  }
-
-  /**
-   * Runs during teleop mode initialization.
-   */
-  @Override
-  public void teleopInit()
-  {
-    gyro.reset();
-  }
-
-  /**
-   * This function is called periodically during operator control.
-   */
-  @Override
-  public void teleopPeriodic()
-  {
+    // Print the gyroscope value to the smartdashboard
+    //SmartDashboard.putNumber("Gyroscope Value", gyro.getOffsetHeading());
+   
     // Format the joystick axes to be used for teleopDrive
     joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), rawJoyR.getRawAxis(1));
     joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
@@ -129,11 +116,48 @@ public class Robot extends TimedRobot {
   }
 
   /**
+   * Runs during teleop mode initialization.
+   */
+  @Override
+  public void teleopInit()
+  {
+  }
+
+  /**
+   * This function is called periodically during operator control.
+   */
+  @Override
+  public void teleopPeriodic()
+  {
+    // Format the joystick axes to be used for teleopDrive
+    joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), rawJoyR.getRawAxis(1));
+    joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
+    
+    // Use the formatted joystick data to drive the robot
+    driveBase.teleopDrive(joyR, joyL);
+   
+    //use button 2 to move forward
+    driveBase.moveForward(rawJoyR.getRawButton(2));
+
+    // Run the pillow according to open and closed buttons
+    pillow.run(rawJoyL.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
+
+    // Run the plunger according to piston and suction buttons
+    plunger.run(rawJoyL.getRawButtonPressed(PISTON_BUTTON), rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
+  }
+
+  /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic()
   {
+    plunger.run(rawJoyL.getRawButtonPressed(PISTON_BUTTON), rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
+    // Format the joystick axes to be used for teleopDrive
+    joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), rawJoyR.getRawAxis(1));
+    joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
     
+    // Use the formatted joystick data to drive the robot
+    driveBase.teleopDrive(joyR, joyL);
   }
 }

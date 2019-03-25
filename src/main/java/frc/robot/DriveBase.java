@@ -2,6 +2,9 @@ package frc.robot;
 
 // Imports for the "DriveBase.java" class.
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 /** Methods:
@@ -36,6 +39,10 @@ public class DriveBase {
     // Minimum joystick movement required for robot control
     private final double JOYSTICK_DEADZONE = 0.1;
 
+    //forward drive speeds
+    private final double SPEED_LEFT = 0.3;
+    private final double SPEED_RIGHT = 0.3;
+
     // Drive speed for autonomous movement
     private final double AUTO_DRIVE_SPEED = 0.1;
 
@@ -65,18 +72,13 @@ public class DriveBase {
     {
         // Checks if the input is out of bounds, and returns out of the method if it is
         if (Math.abs(v) > 2) {
-            System.out.println("Left side velocity out of range!!");
+            System.out.println("Left-side velocity out of range for setLeft() in Drive.java");
             return;
         }
 
         // Makes sure the input velocity isn't above the maximum allowed velocity
         if (Math.abs(v) > MAXIMUM_DRIVE_TALON_INPUT) {
             v = MAXIMUM_DRIVE_TALON_INPUT * (v / Math.abs(v));
-        }
-        // Makes sure the input velocity isn't less than the joystick deadzone
-        else if (Math.abs(v) < JOYSTICK_DEADZONE) {
-            // If it is, set it to 0
-            v = 0;
         }
 
         // Set the left-side talons to the new adjusted velocity
@@ -94,18 +96,13 @@ public class DriveBase {
     {
         // Checks if the input is out of bounds, and returns out of the method if it is
         if (Math.abs(v) > 2) {
-            System.out.println("Right side velocity out of range!!");
+            System.out.println("Right-side velocity out of range for setRight() in Drive.java");
             return;
         }
 
         // Makes sure the input velocity isn't above the maximum allowed velocity
         if (Math.abs(v) > MAXIMUM_DRIVE_TALON_INPUT) {
             v = MAXIMUM_DRIVE_TALON_INPUT * (v / Math.abs(v));
-        }
-        // Makes sure the input velocity isn't less than the joystick deadzone
-        else if (Math.abs(v) < JOYSTICK_DEADZONE) {
-            // If it is, set it to 0
-            v = 0;
         }
 
         // Set the right-side talons to the new adjusted velocity
@@ -123,18 +120,13 @@ public class DriveBase {
     {
         // Checks if the input is out of bounds, and returns out of the method if it is
         if (Math.abs(v) > 2) {
-            System.out.println("Right side velocity out of range!!");
+            System.out.println("Center velocity out of range for setCenter in Drive.java");
             return;
         }
 
         // Makes sure the input velocity isn't above the maximum allowed velocity
         if (Math.abs(v) > MAXIMUM_DRIVE_TALON_INPUT) {
             v = MAXIMUM_DRIVE_TALON_INPUT * (v / Math.abs(v));
-        }
-        // Makes sure the input velocity isn't less than the joystick deadzone
-        else if (Math.abs(v) < JOYSTICK_DEADZONE) {
-            // If it is, set it to 0
-            v = 0;
         }
 
         // Set the center talon to the new adjusted velocity
@@ -144,10 +136,12 @@ public class DriveBase {
     /**
      * Moves the robot forward at a predetermined speed.
      */
-    public void moveForward()
+    public void moveForward(boolean button)
     {
-        setRight(AUTO_DRIVE_SPEED);
-        setLeft(AUTO_DRIVE_SPEED);
+        if(button){
+        setRight(-SPEED_RIGHT);
+        setLeft(SPEED_LEFT);
+        }
     }
 
     /**
@@ -164,8 +158,8 @@ public class DriveBase {
     }
 
     /**
-     * Drives the robot according to a single joystick with two axes of linear
-     * freedom (x and y).
+     * Drives the robot according to two joysticks with
+     * two axes of linear freedom (x and y).
      * 
      * @param joyR
      * @param joyL
@@ -175,14 +169,51 @@ public class DriveBase {
         // Insert appropriate values into a new array for driving
         double[] spinReturn = { joyL[1], joyR[1], ((joyR[0] + joyL[0]) / 2) };
 
-        // Apply parabolic function to appropriate input values
-        spinReturn[0] = Math.pow(spinReturn[0], 2) * A + spinReturn[0] * B + C;
-        spinReturn[1] = Math.pow(spinReturn[1], 2) * A + spinReturn[1] * B + C;
-        spinReturn[2] = Math.pow(spinReturn[2], 2) * A + spinReturn[2] * B + C;
+        // Parabolic functions for given values (use if needed)
+        // spinReturn[0] = (Math.pow(spinReturn[0], 2) * A
+        // + spinReturn[0] * B + C) * (Math.abs(spinReturn[0])/spinReturn[0]);
+        // spinReturn[1] = (Math.pow(spinReturn[1], 2) * A
+        // + spinReturn[1] * B + C) * (Math.abs(spinReturn[1])/spinReturn[1]);
+        // spinReturn[2] = (Math.pow(spinReturn[2], 2) * A
+        // + spinReturn[2] * B + C) * (Math.abs(spinReturn[2])/spinReturn[2]);
+
+        // If the joystick input is within the deadzone, set the input
+        // velocity to the modified joystick input
+        if (Math.abs(spinReturn[0]) > JOYSTICK_DEADZONE) {
+            spinReturn[0] = Math.pow(spinReturn[0], 3);
+        }
+        // Otherwise, set the input velocity to 0
+        else spinReturn[0] = 0;
+
+        // If the joystick input is within the deadzone, set the input
+        // velocity to the modified joystick input
+        if (Math.abs(spinReturn[1]) > JOYSTICK_DEADZONE) {
+            spinReturn[1] = Math.pow(spinReturn[1], 3);
+        }
+        // Otherwise, set the input velocity to 0
+        else spinReturn[1] = 0;
+
+        // If the joystick input is within the deadzone, set the input
+        // velocity to the modified joystick input
+        if (Math.abs(spinReturn[2]) > JOYSTICK_DEADZONE) {
+            spinReturn[2] = Math.pow(spinReturn[2], 3);
+        }
+        // Otherwise, set the input velocity to 0
+        else spinReturn[2] = 0;
+
+        System.out.println("Left Drive = " + spinReturn[0]);
+        System.out.println("Right Drive = " + spinReturn[1]);
+        System.out.println("Center Drive = " + spinReturn[2]);
 
         // Run motors according to new parabolic outputs
-        setLeft(Math.pow(spinReturn[0], 2));
-        setRight(Math.pow(spinReturn[1], 2));
-        setCenter(Math.pow(spinReturn[2], 2));
+        setLeft(spinReturn[0]);
+        setRight(spinReturn[1]);
+        setCenter(spinReturn[2]);
+
+        SmartDashboard.putNumber("Center", talC.getOutputCurrent());
+        SmartDashboard.putNumber("LM", talLM.getOutputCurrent());
+        SmartDashboard.putNumber("RM", talRM.getOutputCurrent());
+        SmartDashboard.putNumber("LF", talLF.getOutputCurrent());
+        SmartDashboard.putNumber("RF", talRF.getOutputCurrent());
     }
 }
