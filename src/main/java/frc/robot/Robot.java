@@ -9,15 +9,21 @@ package frc.robot;
 
 // Imports for the Robot.java class
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.*;
-// import edu.wpi.cscore.UsbCamera;
-// import edu.wpi.cscore.CvSink;
-// import edu.wpi.cscore.CvSource;
-// import org.opencv.core.Mat;
-// import org.opencv.imgproc.Imgproc;
-// import org.opencv.core.Point;
-// import org.opencv.core.Size;
+
+/** Methods:
+ * public void robotInit()
+ * public void robotPeriodic()
+ * public void disabledInit()
+ * public void autonomousInit()
+ * public void autonomousPeriodic()
+ * public void teleopInit()
+ * public void teleopPeriodic()
+ * public void testPeriodic()
+ */
 
 
 /**
@@ -39,18 +45,18 @@ public class Robot extends TimedRobot {
   private final int JOY_R_PORT = 1;
   private final int JOY_L_PORT = 0;
   private double[] joyR = { 0, 0, 0 }, joyL = { 0, 0, 0 };
-  private final int SUCTION_BUTTON = 1;
-  private final int PISTON_BUTTON = 2;
-  private final int PILLOW_BUTTON_OPEN = 3;
-  private final int PILLOW_BUTTON_CLOSED = 4;
+  private final int SUCTION_BUTTON = 6;
+  private final int PISTON_BUTTON = 5;
+  private final int PILLOW_BUTTON_OPEN = 4;
+  private final int PILLOW_BUTTON_CLOSED = 3;
 
-  
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
   @Override
-  public void robotInit() {
+  public void robotInit()
+  {
     // Object initialization
     rawJoyR = new Joystick(JOY_R_PORT);
     rawJoyL = new Joystick(JOY_L_PORT);
@@ -58,47 +64,12 @@ public class Robot extends TimedRobot {
     driveBase = new DriveBase();
     pillow = new Pillow();
     plunger = new Plunger();
-    CameraServer.getInstance().startAutomaticCapture(0);
-    CameraServer.getInstance().startAutomaticCapture(1);
-    // runCamera();
 
-  }
-
-//   public void runCamera(){
-//     new Thread(() -> {
-//       UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
-//       camera.setResolution(640, 480);
-      
-//       CvSink cvSink = CameraServer.getInstance().getVideo();
-//       CvSource outputStream = CameraServer.getInstance().putVideo("Output", 640, 480);
-      
-//       Mat source = new Mat();
-//       Mat output = new Mat();
-      
-//       while(!Thread.interrupted()) {
-//           cvSink.grabFrame(source);
-//         //  Imgproc.warpAffine(source, output, Imgproc.getRotationMatrix2D(new Point(320-1,240-1), 180, 1.0), new Size(640,480));
-//           // output = source.mul();
-//           // Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-
-//           outputStream.putFrame(source);
-//       }
-//   }).start();
-// }
-
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for
-   * items like diagnostics that you want ran during disabled, autonomous,
-   * teleoperated and test.
-   *
-   * <p>
-   * This runs after the mode specific periodic functions, but before LiveWindow
-   * and SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    plunger.plungertest();
-
+    // Starts automatic capture for the Sandstorm cameras
+    UsbCamera cam1 = CameraServer.getInstance().startAutomaticCapture(0);
+    UsbCamera cam2 = CameraServer.getInstance().startAutomaticCapture(1);
+    cam1.setFPS(10);
+    cam2.setFPS(10);
   }
 
   /**
@@ -107,66 +78,86 @@ public class Robot extends TimedRobot {
    * unexpected while disabled.
    */
   @Override
-  public void disabledInit() {
-    plunger.runPiston(false);
+  public void disabledInit()
+  {
   }
 
   /**
    * Runs during autonomous mode initialization.
    */
   @Override
-  public void autonomousInit() {
-
+  public void autonomousInit()
+  {
+    //gyro.reset();
+    plunger.reset();
   }
 
   /**
    * This function is called periodically during autonomous.
    */
   @Override
-  public void autonomousPeriodic() {
+  public void autonomousPeriodic()
+  {
+    // Print the gyroscope value to the smartdashboard
+    //SmartDashboard.putNumber("Gyroscope Value", gyro.getOffsetHeading());
+   
+    // Format the joystick axes to be used for teleopDrive
+    joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), rawJoyR.getRawAxis(1));
+    joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
+    
+    // Use the formatted joystick data to drive the robot
+    driveBase.teleopDrive(joyR, joyL);
+    
+    // Run the pillow according to open and closed buttons
+    pillow.run(rawJoyL.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
 
+    // Run the plunger according to piston and suction buttons
+    plunger.run(rawJoyL.getRawButtonPressed(PISTON_BUTTON), rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
   }
 
   /**
    * Runs during teleop mode initialization.
    */
   @Override
-  public void teleopInit() {
-
+  public void teleopInit()
+  {
   }
 
   /**
    * This function is called periodically during operator control.
    */
   @Override
-  public void teleopPeriodic() {
+  public void teleopPeriodic()
+  {
     // Format the joystick axes to be used for teleopDrive
     joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), rawJoyR.getRawAxis(1));
     joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
+    
     // Use the formatted joystick data to drive the robot
     driveBase.teleopDrive(joyR, joyL);
-    // Run the plunger according to the state machine within the class and the given
-    // suction button
-    pillow.runPillow(rawJoyR.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
+   
+    //use button 2 to move forward
+    driveBase.moveForward(rawJoyR.getRawButton(2));
 
-    // Run the plunger according to the state machine within the class and the given
-    // suction button
-    plunger.runPiston(rawJoyR.getRawButtonPressed(PISTON_BUTTON));
-    plunger.runPlunger(rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
-    plunger.runSolenoid();
-    plunger.runCompressor();
+    // Run the pillow according to open and closed buttons
+    pillow.run(rawJoyL.getRawButton(PILLOW_BUTTON_OPEN), rawJoyR.getRawButton(PILLOW_BUTTON_CLOSED));
+
+    // Run the plunger according to piston and suction buttons
+    plunger.run(rawJoyL.getRawButtonPressed(PISTON_BUTTON), rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
   }
 
   /**
    * This function is called periodically during test mode.
    */
   @Override
-  public void testPeriodic() {
-    // driveBase.setRight(rawJoyR.getRawAxis(1)*0.3);
-    // driveBase.setLeft(rawJoyL.getRawAxis(1)*0.3);
-    // driveBase.setCenter(rawJoyR.getRawAxis(0)*0.3);
-    joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), -rawJoyR.getRawAxis(1));
+  public void testPeriodic()
+  {
+    plunger.run(rawJoyL.getRawButtonPressed(PISTON_BUTTON), rawJoyR.getRawButtonPressed(SUCTION_BUTTON));
+    // Format the joystick axes to be used for teleopDrive
+    joyR = driveBase.formatDriveJoystick(rawJoyR.getRawAxis(0), rawJoyR.getRawAxis(1));
     joyL = driveBase.formatDriveJoystick(rawJoyL.getRawAxis(0), -rawJoyL.getRawAxis(1));
+    
+    // Use the formatted joystick data to drive the robot
     driveBase.teleopDrive(joyR, joyL);
   }
 }
